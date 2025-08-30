@@ -43,7 +43,7 @@ def _generate_final_names(row, en_to_key_map, key_to_ja_map):
 
 def create_translation_dicts(hero_master_df, g_sheet_df):
     """
-    Creates translation dictionaries using the live Google Sheet data.
+    Creates translation dictionaries using the live Google Sheet data. 
     """
     # Use specified column names, fall back to indices
     g_sheet_df.columns = ['hero_ja', 'id', 'hero_en'] + list(g_sheet_df.columns[3:])
