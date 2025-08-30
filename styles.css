@@ -1,10 +1,55 @@
-/* Allow line breaks in dataframe cells */
-div[data-testid="stDataFrame"] div[data-testid="stMarkdownContainer"] {
-    white-space: pre-wrap !important;
+.styled-table {
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 0.9em;
+    font-family: 'Lexend Deca', sans-serif;
+    width: 100%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+    background-color: #262730;
+    table-layout: fixed;
+    word-wrap: break-word;
 }
 
-/* Reduce font size in dataframe cells */
-div[data-testid="stDataFrame"] div[data-testid="stMarkdownContainer"] p {
-    font-size: 0.9em !important;
-    line-height: 1.2;
+.styled-table thead tr {
+    background-color: #1a1a2e;
+    color: #ffffff;
+    text-align: left;
 }
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+    text-align: left;
+    vertical-align: top;
+    color: #e0e0e0;
+    border-bottom: 1px solid #4f4f4f;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #3e3e3e;
+    transition: background-color 0.2s ease;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #3b3b4f;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #1a1a2e;
+}
+
+/* --- Icon and Column Width Control --- */
+.icon-image {
+    max-height: 32px;
+    vertical-align: middle;
+}
+
+.col-icon           { width: 60px; }
+.col-display-type   { width: 120px; }
+.col-start-time,
+.col-end-time       { width: 160px; }
+.col-duration       { width: 80px; }
+.col-featured-heroes-jp,
+.col-name-jp,
+.col-name-en { width: auto; }
+

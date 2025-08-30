@@ -4,6 +4,7 @@ import base64
 from pathlib import Path
 import re
 import json
+import re
 
 ICON_BASE_DIR = Path("D:/KB/_all_link_images/Sprite/")
 RULES_FILE = Path("data/type_mapping_rules.json")
@@ -70,3 +71,48 @@ def format_dataframe_for_display(df, rules, en_map, ja_map):
             
     return df
 
+def to_html_table(df):
+    def sanitize_for_classname(text):
+        text = text.lower()
+        text = re.sub(r'[\s\(\)]+', '-', text)
+        text = re.sub(r'[^a-z0-9-]', '', text)
+        return f"col-{text.strip('-')}"
+
+    table_html = '<table class="styled-table">'
+
+    header_cells = []
+    col_classnames = []
+    for col in df.columns:
+        classname = sanitize_for_classname(col)
+        col_classnames.append(classname)
+        header_cells.append(f'<th class="{classname}">{col}</th>')
+    
+    header_html = "".join(header_cells)
+    table_html += f"<thead><tr>{header_html}</tr></thead>"
+
+    body_rows_html = []
+    for _, row in df.iterrows():
+        row_html = "<tr>"
+        for i, (col_name, cell_value) in enumerate(row.items()):
+            classname = col_classnames[i]
+            cell_content = ""
+
+            if isinstance(cell_value, list):
+                cell_content = "<br>".join(map(str, cell_value))
+            elif isinstance(cell_value, str):
+                if cell_value.startswith("http"):
+                    cell_content = f'<img src="{cell_value}" class="icon-image">'
+                else:
+                    cell_content = cell_value.replace("\n", "<br>")
+            else:
+                cell_content = str(cell_value)
+            
+            row_html += f'<td class="{classname}">{cell_content}</td>'
+        row_html += "</tr>"
+        body_rows_html.append(row_html)
+    
+    body_html = "".join(body_rows_html)
+    table_html += f"<tbody>{body_html}</tbody>"
+    
+    table_html += "</table>"
+    return table_html

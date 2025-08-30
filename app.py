@@ -8,7 +8,7 @@ import sys
 
 from modules.data_loader import load_all_data
 from modules.translation_engine import create_translation_dicts
-from modules.display_formatter import format_dataframe_for_display
+from modules.display_formatter import format_dataframe_for_display, to_html_table
 
 DATA_DIR = Path("data")
 CONFIG_FILE = DATA_DIR / "config.json"
@@ -29,7 +29,8 @@ def initialize_files():
             "event_folder": "", "diff_folder": "",
             "filter_start_date": date.today().isoformat(),
             "filter_end_date": (date.today() + pd.Timedelta(days=30)).isoformat(),
-            "timezone": "UTC", "display_mode": "Japanese"
+            "timezone": "UTC", "display_mode": "Japanese",
+            "view_mode_index": 0
         }
         save_json_file(CONFIG_FILE, default_config)
 
@@ -70,6 +71,15 @@ def calculate_duration(start_s, end_s):
     return delta.apply(format_delta)
 
 st.set_page_config(layout="wide")
+
+# --- このブロックを追加 ---
+st.markdown("""
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+""", unsafe_allow_html=True)
+# -------------------------
+
 inject_custom_css()
 st.title("Event Calendar Management Dashboard")
 
@@ -125,26 +135,45 @@ if config.get("event_folder"):
         end_dt_aware = (pd.to_datetime(end_date_filter) + pd.Timedelta(days=1, seconds=-1)).tz_localize(display_df['Start Time'].dt.tz)
         filtered_df = display_df[display_df['Start Time'].between(start_dt_aware, end_dt_aware)].copy()
         
-        dt_format = "%Y-%m-%d %H:%M"
-        filtered_df['Start Time'] = filtered_df['Start Time'].dt.strftime(dt_format)
-        filtered_df['End Time'] = filtered_df['End Time'].dt.strftime(dt_format)
-
         st.subheader("Filtered Event List")
-        
-        base_cols = ['Icon', 'Display Type', 'Start Time', 'End Time', 'Duration']
-        consolidated_cols = ['Featured Heroes (JP)', 'Featured Heroes (EN)', 'Other Heroes (JP)', 'Other Heroes (EN)']
-        raw_data_cols = [c for c in data['main_df'].columns]
-        
-        final_display_cols = base_cols + consolidated_cols + raw_data_cols
-        
-        st.dataframe(
-            filtered_df,
-            height=800,
-            column_order=[c for c in final_display_cols if c in filtered_df.columns],
-            column_config={
-                "Icon": st.column_config.ImageColumn("Icon", width="small", help="Event Icon")
-            }
+
+        view_mode = st.radio(
+            "View Mode",
+            ["Interactive", "Presentation"],
+            horizontal=True,
+            index=config.get("view_mode_index", 0),
         )
+        new_view_mode_index = ["Interactive", "Presentation"].index(view_mode)
+        if new_view_mode_index != config.get("view_mode_index"):
+            config["view_mode_index"] = new_view_mode_index
+            save_json_file(CONFIG_FILE, config)
+        
+        if not filtered_df.empty:
+            dt_format = "%Y-%m-%d %H:%M"
+            filtered_df['Start Time'] = filtered_df['Start Time'].dt.strftime(dt_format)
+            filtered_df['End Time'] = filtered_df['End Time'].dt.strftime(dt_format)
+
+            display_cols_config = {
+                "Japanese": ['Icon', 'name_jp', 'Display Type', 'Start Time', 'End Time', 'Duration', 'Featured Heroes (JP)'],
+                "English": ['Icon', 'name_en', 'Display Type', 'Start Time', 'End Time', 'Duration', 'Featured Heroes (EN)'],
+                "Both": ['Icon', 'name_jp', 'name_en', 'Display Type', 'Start Time', 'End Time', 'Duration', 'Featured Heroes (JP)', 'Featured Heroes (EN)']
+            }
+            
+            column_order = [col for col in display_cols_config[display_mode] if col in filtered_df.columns]
+            final_df = filtered_df[column_order].copy()
+
+            if view_mode == "Interactive":
+                st.data_editor(
+                    final_df,
+                    column_config={"Icon": st.column_config.ImageColumn("Icon", help="Event Icon")},
+                    hide_index=True,
+                    use_container_width=True,
+                )
+            elif view_mode == "Presentation":
+                html_table = to_html_table(final_df)
+                st.markdown(html_table, unsafe_allow_html=True)
+        else:
+            st.warning("No events found in the selected date range.")
 
     except FileNotFoundError as e:
          st.warning(f"Master CSV not found for '{config['event_folder']}'. Please generate it.")

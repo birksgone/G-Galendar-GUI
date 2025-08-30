@@ -5,6 +5,7 @@
   "filter_start_date": "2025-08-24",
   "filter_end_date": "2025-10-04",
   "timezone": "UTC",
-  "display_mode": "English",
-  "hero_display_format": "Consolidated"
+  "display_mode": "Both",
+  "hero_display_format": "Consolidated",
+  "view_mode_index": 1
 }
