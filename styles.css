@@ -49,7 +49,9 @@
 .col-start-time,
 .col-end-time       { width: 160px; }
 .col-duration       { width: 80px; }
-.col-featured-heroes-jp,
-.col-name-jp,
-.col-name-en { width: auto; }
+
+.col-featured-heroes-en,
+.col-non-featured-heroes-en,
+.col-featured-heroes-ja,
+.col-non-featured-heroes-ja { width: auto; }
 

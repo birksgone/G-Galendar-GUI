@@ -109,6 +109,10 @@ if config.get("event_folder"):
     try:
         data = load_all_data(config["event_folder"], config.get("diff_folder"))
         en_map, ja_map = create_translation_dicts(data['hero_master_df'], data['g_sheet_df'])
+
+        # --- この行を追加 ---
+        # st.write(data['main_df'].columns.tolist())
+        # --------------------
         
         display_df = format_dataframe_for_display(data['main_df'].copy(), rules, en_map, ja_map)
 
@@ -154,9 +158,19 @@ if config.get("event_folder"):
             filtered_df['End Time'] = filtered_df['End Time'].dt.strftime(dt_format)
 
             display_cols_config = {
-                "Japanese": ['Icon', 'name_jp', 'Display Type', 'Start Time', 'End Time', 'Duration', 'Featured Heroes (JP)'],
-                "English": ['Icon', 'name_en', 'Display Type', 'Start Time', 'End Time', 'Duration', 'Featured Heroes (EN)'],
-                "Both": ['Icon', 'name_jp', 'name_en', 'Display Type', 'Start Time', 'End Time', 'Duration', 'Featured Heroes (JP)', 'Featured Heroes (EN)']
+                "Japanese": [
+                    'Icon', 'Display Type', 'Start Time', 'End Time', 'Duration',
+                    'Featured Heroes (JA)', 'Non-Featured Heroes (JA)'
+                ],
+                "English": [
+                    'Icon', 'Display Type', 'Start Time', 'End Time', 'Duration',
+                    'Featured Heroes (EN)', 'Non-Featured Heroes (EN)'
+                ],
+                "Both": [
+                    'Icon', 'Display Type', 'Start Time', 'End Time', 'Duration',
+                    'Featured Heroes (EN)', 'Non-Featured Heroes (EN)',
+                    'Featured Heroes (JA)', 'Non-Featured Heroes (JA)'
+                ]
             }
             
             column_order = [col for col in display_cols_config[display_mode] if col in filtered_df.columns]
