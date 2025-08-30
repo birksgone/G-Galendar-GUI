@@ -49,28 +49,23 @@ def calculate_duration(start_s, end_s):
         return " ".join(parts) if parts else ""
     return delta.apply(format_delta)
 
-def format_dataframe_for_display(df, en_map, ja_map):
-    rules = []
-    if RULES_FILE.exists():
-        with open(RULES_FILE, 'r', encoding='utf-8') as f:
-            rules = json.load(f)
-    
+def format_dataframe_for_display(df, rules, en_map, ja_map):
     results = df.apply(lambda row: _find_matching_rule(row, rules), axis=1)
     df[['Display Type', 'Icon File']] = pd.DataFrame(results.tolist(), index=df.index)
-    df['Icon'] = df['Icon File'].apply(_image_to_html)
     
+    ICON_BASE_URL = "https://bbcamp.info/wp-content/uploads/camp-img/calendar_type_icon/"
+    df['Icon'] = df['Icon File'].apply(lambda x: f"{ICON_BASE_URL}{x}" if pd.notna(x) and x else "")
+
     hero_cols = [c for c in ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'] if c in df.columns]
     non_feat_cols = [c for c in ['C1', 'C2', 'C3', 'C4', 'C5', 'C6'] if c in df.columns]
-    all_hero_cols = [c for c in ['advertisedHero'] if c in df.columns] + hero_cols + non_feat_cols
+    
+    for lang, t_map in [("JP", ja_map), ("EN", en_map)]:
+        df[f'Featured Heroes ({lang})'] = df[hero_cols].apply(lambda r: '\n'.join(str(t_map.get(v, v)) for v in r if pd.notna(v) and v != ''), axis=1)
+        df[f'Other Heroes ({lang})'] = df[non_feat_cols].apply(lambda r: '\n'.join(str(t_map.get(v, v)) for v in r if pd.notna(v) and v != ''), axis=1)
 
-    for col in all_hero_cols:
+    for col in hero_cols + non_feat_cols + ['advertisedHero']:
         if col in df.columns:
             df[f'{col} (JP)'] = df[col].map(ja_map).fillna('')
             df[f'{col} (EN)'] = df[col].map(en_map).fillna('')
-
-    df['Featured Heroes (JP)'] = df[[f'{c} (JP)' for c in hero_cols]].apply(lambda r: '\n'.join(v for v in r if v), axis=1)
-    df['Featured Heroes (EN)'] = df[[f'{c} (EN)' for c in hero_cols]].apply(lambda r: '\n'.join(v for v in r if v), axis=1)
-    df['Other Heroes (JP)'] = df[[f'{c} (JP)' for c in non_feat_cols]].apply(lambda r: '\n'.join(v for v in r if v), axis=1)
-    df['Other Heroes (EN)'] = df[[f'{c} (EN)' for c in non_feat_cols]].apply(lambda r: '\n'.join(v for v in r if v), axis=1)
-         
+            
     return df
