@@ -1,7 +1,8 @@
 .styled-table {
     border-collapse: collapse;
-    margin: 15px 0;
-    font-size: 0.9em;
+    margin: 2px 0;
+    font-size: 0.8em;
+    line-height: 1em;
     font-family: 'Lexend Deca', sans-serif;
     width: 100%;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
@@ -18,7 +19,7 @@
 
 .styled-table th,
 .styled-table td {
-    padding: 12px 15px;
+    padding: 4px 2px;
     text-align: left;
     vertical-align: top;
     color: #e0e0e0;
@@ -40,15 +41,15 @@
 
 /* --- Icon and Column Width Control --- */
 .icon-image {
-    max-height: 32px;
+    max-height: 24px;
     vertical-align: middle;
 }
 
-.col-icon           { width: 60px; }
+.col-icon           { width: 40px; }
 .col-display-type   { width: 120px; }
 .col-start-time,
-.col-end-time       { width: 160px; }
-.col-duration       { width: 80px; }
+.col-end-time       { width: 120px; }
+.col-duration       { width: 40px; }
 
 .col-featured-heroes-en,
 .col-non-featured-heroes-en,
