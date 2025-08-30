@@ -10,14 +10,18 @@ from modules.data_loader import load_all_data
 from modules.translation_engine import create_translation_dicts
 from modules.display_formatter import format_dataframe_for_display
 
-# --- Constants ---
 DATA_DIR = Path("data")
 CONFIG_FILE = DATA_DIR / "config.json"
-RULES_FILE = DATA_DIR / "type_mapping_rules.json" # Added for rules JSON
+RULES_FILE = DATA_DIR / "type_mapping_rules.json"
 EVENT_HISTORY_FILE = DATA_DIR / ".history_event.log"
 HERO_GEN_SCRIPT_PATH = "D:/PyScript/EMP Extract/FLAT-EXTRACT/All Hero/generate_hero_dataset_gemini_v1.9.py"
 
-# --- Helper Functions ---
+def inject_custom_css():
+    css_file = "styles.css"
+    if Path(css_file).is_file():
+        with open(css_file) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 def initialize_files():
     DATA_DIR.mkdir(exist_ok=True)
     if not CONFIG_FILE.exists():
@@ -29,7 +33,7 @@ def initialize_files():
         }
         save_json_file(CONFIG_FILE, default_config)
 
-def load_json_file(filepath, default_data=[]): # Default to empty list for rules
+def load_json_file(filepath, default_data={}):
     if not filepath.exists(): return default_data
     try:
         with open(filepath, "r", encoding="utf-8") as f: return json.load(f)
@@ -65,15 +69,14 @@ def calculate_duration(start_s, end_s):
         return " ".join(parts) if parts else ""
     return delta.apply(format_delta)
 
-# --- Main App Logic ---
 st.set_page_config(layout="wide")
+inject_custom_css()
 st.title("Event Calendar Management Dashboard")
 
 initialize_files()
-config = load_json_file(CONFIG_FILE, {}) # Load config as dict
-rules = load_json_file(RULES_FILE, [])   # Load rules as list
+config = load_json_file(CONFIG_FILE)
+rules = load_json_file(RULES_FILE, [])
 
-# --- Sidebar ---
 st.sidebar.header("Select Data Sources")
 latest_folder = st.sidebar.text_input("① Latest Data (Required)", value=config.get("event_folder"))
 event_history = load_history(EVENT_HISTORY_FILE)
@@ -92,13 +95,11 @@ if st.sidebar.button("Load Data", key="load_data_button"):
     save_to_history(EVENT_HISTORY_FILE, latest_folder)
     st.rerun()
 
-# --- Main Screen ---
 if config.get("event_folder"):
     try:
         data = load_all_data(config["event_folder"], config.get("diff_folder"))
         en_map, ja_map = create_translation_dicts(data['hero_master_df'], data['g_sheet_df'])
         
-        # Call formatter to get the final display dataframe
         display_df = format_dataframe_for_display(data['main_df'].copy(), rules, en_map, ja_map)
 
         st.header(f"Event Display: `{config['event_folder']}`")
@@ -117,12 +118,9 @@ if config.get("event_folder"):
         if display_mode != config.get('display_mode'): config['display_mode'] = display_mode; config_changed = True
         if config_changed: save_json_file(CONFIG_FILE, config)
 
-        # Date and Duration formatting
         display_df['Start Time'] = convert_posix_to_datetime(display_df['startDate'], timezone)
         display_df['End Time'] = convert_posix_to_datetime(display_df['endDate'], timezone)
         display_df['Duration'] = calculate_duration(display_df['Start Time'], display_df['End Time'])
-        
-        # Filtering
         start_dt_aware = pd.to_datetime(start_date_filter).tz_localize(display_df['Start Time'].dt.tz)
         end_dt_aware = (pd.to_datetime(end_date_filter) + pd.Timedelta(days=1, seconds=-1)).tz_localize(display_df['Start Time'].dt.tz)
         filtered_df = display_df[display_df['Start Time'].between(start_dt_aware, end_dt_aware)].copy()
@@ -133,7 +131,6 @@ if config.get("event_folder"):
 
         st.subheader("Filtered Event List")
         
-        # Define Final Column Order
         base_cols = ['Icon', 'Display Type', 'Start Time', 'End Time', 'Duration']
         consolidated_cols = ['Featured Heroes (JP)', 'Featured Heroes (EN)', 'Other Heroes (JP)', 'Other Heroes (EN)']
         raw_data_cols = [c for c in data['main_df'].columns]
@@ -145,7 +142,7 @@ if config.get("event_folder"):
             height=800,
             column_order=[c for c in final_display_cols if c in filtered_df.columns],
             column_config={
-                "Icon": st.column_config.ImageColumn("Icon", width="small", help="Event Icon"),
+                "Icon": st.column_config.ImageColumn("Icon", width="small", help="Event Icon")
             }
         )
 

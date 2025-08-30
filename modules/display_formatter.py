@@ -69,3 +69,4 @@ def format_dataframe_for_display(df, rules, en_map, ja_map):
             df[f'{col} (EN)'] = df[col].map(en_map).fillna('')
             
     return df
+

@@ -1,0 +1,10 @@
+/* Allow line breaks in dataframe cells */
+div[data-testid="stDataFrame"] div[data-testid="stMarkdownContainer"] {
+    white-space: pre-wrap !important;
+}
+
+/* Reduce font size in dataframe cells */
+div[data-testid="stDataFrame"] div[data-testid="stMarkdownContainer"] p {
+    font-size: 0.9em !important;
+    line-height: 1.2;
+}
