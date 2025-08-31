@@ -173,18 +173,43 @@ if config.get("event_folder"):
                 ]
             }
             
+            header_labels = {
+                "Icon": "Icon",
+                "Display Type": "Type",
+                "Start Time": "Start",
+                "End Time": "End",
+                "Duration": "Days",
+                "Featured Heroes (EN)": "Feat.(EN)",
+                "Non-Featured Heroes (EN)": "Non-Feat.(EN)",
+                "Featured Heroes (JA)": "Feat.(JA)",
+                "Non-Featured Heroes (JA)": "Non-Feat.(JA)",
+                "Event Name": "Event ID"
+            }
+
             column_order = [col for col in display_cols_config[display_mode] if col in filtered_df.columns]
-            final_df = filtered_df[column_order].copy()
 
             if view_mode == "Interactive":
+                if 'Event Name' in filtered_df.columns:
+                    column_order.append('Event Name')
+            
+            final_df = filtered_df.reindex(columns=column_order).fillna('')
+
+            if view_mode == "Interactive":
+                column_config_interactive = {
+                    "Icon": st.column_config.ImageColumn("Icon", help="Event Icon")
+                }
+                for col_name, label in header_labels.items():
+                    if col_name != "Icon" and col_name in final_df.columns:
+                        column_config_interactive[col_name] = st.column_config.Column(label)
+
                 st.data_editor(
                     final_df,
-                    column_config={"Icon": st.column_config.ImageColumn("Icon", help="Event Icon")},
+                    column_config=column_config_interactive,
                     hide_index=True,
                     use_container_width=True,
                 )
             elif view_mode == "Presentation":
-                html_table = to_html_table(final_df)
+                html_table = to_html_table(final_df, header_labels)
                 st.markdown(html_table, unsafe_allow_html=True)
         else:
             st.warning("No events found in the selected date range.")

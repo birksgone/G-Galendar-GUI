@@ -73,7 +73,10 @@ def format_dataframe_for_display(df, type_mapping_rules, en_map, ja_map):
 
     return df_copy
 
-def to_html_table(df):
+def to_html_table(df, header_labels=None):
+    if header_labels is None:
+        header_labels = {}
+
     def sanitize_for_classname(text):
         text = text.lower()
         text = re.sub(r'[\s\(\)]+', '-', text)
@@ -87,7 +90,8 @@ def to_html_table(df):
     for col in df.columns:
         classname = sanitize_for_classname(col)
         col_classnames.append(classname)
-        header_cells.append(f'<th class="{classname}">{col}</th>')
+        display_name = header_labels.get(col, col)
+        header_cells.append(f'<th class="{classname}">{display_name}</th>')
     
     header_html = "".join(header_cells)
     table_html += f"<thead><tr>{header_html}</tr></thead>"

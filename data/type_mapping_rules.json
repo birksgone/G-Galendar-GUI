@@ -10,7 +10,7 @@
   {
     "priority": 20,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "AscensionItemSummon" }
+      { "column": "event", "operator": "matches", "value": ".*_ascensionitemsummon_.*" }
     ],
     "output": "Ascend SM",
     "icon": "ascension_crystal.png"
@@ -26,7 +26,7 @@
   {
     "priority": 40,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "LimitBreakItemSummon" }
+      { "column": "event", "operator": "matches", "value": "'*_limitbreakitemsummon_.*" }
     ],
     "output": "Aether SM",
     "icon": "aether_crystal.png"
@@ -549,7 +549,7 @@
       { "column": "event", "operator": "matches", "value": "lottery_covenant_.*|loterry_covenant_.*" }
     ],
     "output": "Covenant",
-    "icon": ""
+    "icon": "covenant_coin.png"
   },
   {
     "priority": 700,

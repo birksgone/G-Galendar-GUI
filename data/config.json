@@ -1,8 +1,8 @@
 {
-  "event_folder": "V7900R-2025-08-28-2",
+  "event_folder": "V7900R-2025-08-29",
   "diff_folder": "V7900R-2025-08-27",
   "lang_folder": "V79/TextAsset-V79",
-  "filter_start_date": "2025-08-24",
+  "filter_start_date": "2025-08-28",
   "filter_end_date": "2025-10-04",
   "timezone": "UTC",
   "display_mode": "Both",
