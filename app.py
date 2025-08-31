@@ -140,7 +140,7 @@ if config.get("event_folder"):
             label_to_col_map = {v: k for k, v in header_labels.items()}
 
             presets = {
-                "Standard": ['Icon', 'Display Type', 'Start Time', 'End Time', 'Duration', 
+                "Standard": ['Icon', 'Display Type', 'questline', 'Start Time', 'End Time', 'Duration', 
                              'Featured Heroes (EN)', 'Non-Featured Heroes (EN)', 
                              'Featured Heroes (JA)', 'Non-Featured Heroes (JA)'],
                 "All Columns": all_df_columns

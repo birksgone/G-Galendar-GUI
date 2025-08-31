@@ -68,7 +68,7 @@
 .col-days { min-width: 50px; }
 .col-feat-en, .col-non-feat-en,
 .col-feat-ja, .col-non-feat-ja { min-width: 200px; }
-.col-event-id, .col-advertisedhero, .col-questline { min-width: 200px; }
+.col-event-id, .col-advertisedhero { min-width: 200px; }
 .col-diff-status { min-width: 100px; }
 .col-changed-parts { min-width: 180px; }
 .col-c1, .col-c2, .col-c3, .col-c4, .col-c5, .col-c6,
@@ -76,6 +76,13 @@
 .col-h1-new, .col-h2-new, .col-h3-new, .col-h4-new, .col-h5-new, .col-h6-new,
 .col-c1-new, .col-c2-new, .col-c3-new, .col-c4-new, .col-c5-new, .col-c6-new { min-width: 80px; }
 
+/* --- questline 専用の折り返しスタイル --- */
+.col-questline {
+    min-width: 100px;
+    max-width: 100px; /* 最大幅を指定 */
+    white-space: normal; /* 折り返しを許可 */
+    word-wrap: break-word; /* 単語の途中でも改行 */
+}
 
 /* --- 差分ハイライト --- */
 .diff-new { background-color: #2a4c3a; }
