@@ -37,7 +37,7 @@
       { "column": "event", "operator": "matches", "value": "^hero_coach.*" }
     ],
     "output": "Hero Coach",
-    "icon": ""
+    "icon": "offericon_herocoach.png"
   },
   {
     "priority": 60,
@@ -45,7 +45,7 @@
       { "column": "event", "operator": "matches", "value": "^pvpLeague_.*" }
     ],
     "output": "Hero League",
-    "icon": "offericon_herocoach.png"
+    "icon": "passive_league.png"
   },
   {
     "priority": 70,

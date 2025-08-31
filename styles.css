@@ -63,16 +63,16 @@
 
 /* --- 列幅指定 --- */
 .col-icon { min-width: 40px; }
-.col-type { min-width: 150px; }
+.col-type { max-width: 100px; white-space: normal; word-wrap: break-word}
 .col-start, .col-end { min-width: 130px; }
 .col-days { min-width: 50px; }
 .col-feat-en, .col-non-feat-en,
-.col-feat-ja, .col-non-feat-ja { min-width: 200px; }
-.col-event-id, .col-advertisedhero { min-width: 200px; }
+.col-feat-ja, .col-non-feat-ja { min-width: 100px; }
+.col-event-id, .col-advertisedhero { min-width: 100px; }
 .col-diff-status { min-width: 100px; }
 .col-changed-parts { min-width: 180px; }
 .col-c1, .col-c2, .col-c3, .col-c4, .col-c5, .col-c6,
-.col-h1, .col-h2, .col-h3, .col-h4, .col-h5, .col-h6 { min-width: 180px; }
+.col-h1, .col-h2, .col-h3, .col-h4, .col-h5, .col-h6 { min-width: 80px; }
 .col-h1-new, .col-h2-new, .col-h3-new, .col-h4-new, .col-h5-new, .col-h6-new,
 .col-c1-new, .col-c2-new, .col-c3-new, .col-c4-new, .col-c5-new, .col-c6-new { min-width: 80px; }
 

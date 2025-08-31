@@ -37,7 +37,10 @@ def compare_dataframes(current_df, previous_df):
                 row_data[col] = row[f'{col}_curr']
 
             for col in date_cols:
-                if row[f'{col}_curr'] != row[f'{col}_prev']:
+                val_curr = row[f'{col}_curr']
+                val_prev = row[f'{col}_prev']
+                
+                if val_curr != val_prev and not (pd.isna(val_curr) and pd.isna(val_prev)):
                     status = 'modified'
                     changed_cols.add('dates')
 

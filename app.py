@@ -139,11 +139,16 @@ if config.get("event_folder"):
                     header_labels[col] = col
             label_to_col_map = {v: k for k, v in header_labels.items()}
 
+            standard_cols = ['Icon', 'Display Type', 'questline', 'Start Time', 'End Time', 'Duration',
+                             'Featured Heroes (EN)', 'Non-Featured Heroes (EN)',
+                             'Featured Heroes (JA)', 'Non-Featured Heroes (JA)']
+            
+            other_cols = sorted([col for col in all_df_columns if col not in standard_cols])
+            ordered_all_cols = standard_cols + other_cols
+
             presets = {
-                "Standard": ['Icon', 'Display Type', 'questline', 'Start Time', 'End Time', 'Duration', 
-                             'Featured Heroes (EN)', 'Non-Featured Heroes (EN)', 
-                             'Featured Heroes (JA)', 'Non-Featured Heroes (JA)'],
-                "All Columns": all_df_columns
+                "Standard": standard_cols,
+                "All Columns": ordered_all_cols
             }
             
             # --- UI: プリセット選択 ---
@@ -151,10 +156,6 @@ if config.get("event_folder"):
             
             # --- UI: 列の個別カスタマイズ ---
             with st.expander("Customize Columns", expanded=False):
-                standard_cols = presets["Standard"]
-                other_cols = sorted([col for col in all_df_columns if col not in standard_cols])
-                ordered_all_cols = standard_cols + other_cols
-
                 if 'selected_cols' not in st.session_state:
                     st.session_state.selected_cols = presets["Standard"]
                 if st.session_state.get('current_preset') != preset_choice:
