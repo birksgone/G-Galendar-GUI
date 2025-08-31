@@ -9,6 +9,7 @@ import sys
 from modules.data_loader import load_all_data
 from modules.translation_engine import create_translation_dicts
 from modules.display_formatter import format_dataframe_for_display, to_html_table
+from modules.diff_engine import compare_dataframes
 
 DATA_DIR = Path("data")
 CONFIG_FILE = DATA_DIR / "config.json"
@@ -19,7 +20,7 @@ HERO_GEN_SCRIPT_PATH = "D:/PyScript/EMP Extract/FLAT-EXTRACT/All Hero/generate_h
 def inject_custom_css():
     css_file = "styles.css"
     if Path(css_file).is_file():
-        with open(css_file) as f:
+        with open(css_file, "r", encoding="utf-8") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 def initialize_files():
@@ -55,31 +56,7 @@ def save_to_history(filepath, new_entry):
     if new_entry: history.insert(0, new_entry)
     with open(filepath, "w", encoding="utf-8") as f: f.write("\n".join(history))
 
-def convert_posix_to_datetime(series, target_tz='UTC'):
-    utc_time = pd.to_datetime(series + 946684800, unit='s', errors='coerce').dt.tz_localize('UTC')
-    return utc_time.dt.tz_convert('Asia/Tokyo') if target_tz == 'JST' else utc_time
-
-def calculate_duration(start_s, end_s):
-    delta = end_s - start_s
-    def format_delta(td):
-        if pd.isna(td): return ""
-        d, s = td.days, td.seconds
-        h = s // 3600
-        parts = [f"{d}d"] if d > 0 else []
-        if h > 0: parts.append(f"{h}h")
-        return " ".join(parts) if parts else ""
-    return delta.apply(format_delta)
-
 st.set_page_config(layout="wide")
-
-# --- このブロックを追加 ---
-st.markdown("""
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
-""", unsafe_allow_html=True)
-# -------------------------
-
 inject_custom_css()
 st.title("Event Calendar Management Dashboard")
 
@@ -108,14 +85,17 @@ if st.sidebar.button("Load Data", key="load_data_button"):
 if config.get("event_folder"):
     try:
         data = load_all_data(config["event_folder"], config.get("diff_folder"))
-        en_map, ja_map = create_translation_dicts(data['hero_master_df'], data['g_sheet_df'])
-
-        # --- この行を追加 ---
-        # st.write(data['main_df'].columns.tolist())
-        # --------------------
         
-        display_df = format_dataframe_for_display(data['main_df'].copy(), rules, en_map, ja_map)
+        comparison_df = None
+        if data['diff_df'] is not None:
+            comparison_df = compare_dataframes(data['main_df'], data['diff_df'])
+        else:
+            comparison_df = data['main_df'].copy()
+            comparison_df['_diff_status'] = 'unchanged'
+            comparison_df['_changed_columns'] = [[] for _ in range(len(comparison_df))]
 
+        en_map, ja_map = create_translation_dicts(data['hero_master_df'], data['g_sheet_df'])
+        
         st.header(f"Event Display: `{config['event_folder']}`")
         c1, c2, c3, c4 = st.columns([1, 1, 1, 3])
         start_date_val = date.fromisoformat(config.get('filter_start_date', date.today().isoformat()))
@@ -132,15 +112,14 @@ if config.get("event_folder"):
         if display_mode != config.get('display_mode'): config['display_mode'] = display_mode; config_changed = True
         if config_changed: save_json_file(CONFIG_FILE, config)
 
-        display_df['Start Time'] = convert_posix_to_datetime(display_df['startDate'], timezone)
-        display_df['End Time'] = convert_posix_to_datetime(display_df['endDate'], timezone)
-        display_df['Duration'] = calculate_duration(display_df['Start Time'], display_df['End Time'])
+        display_df = format_dataframe_for_display(comparison_df, rules, en_map, ja_map, timezone)
+
         start_dt_aware = pd.to_datetime(start_date_filter).tz_localize(display_df['Start Time'].dt.tz)
         end_dt_aware = (pd.to_datetime(end_date_filter) + pd.Timedelta(days=1, seconds=-1)).tz_localize(display_df['Start Time'].dt.tz)
+        
         filtered_df = display_df[display_df['Start Time'].between(start_dt_aware, end_dt_aware)].copy()
         
         st.subheader("Filtered Event List")
-
         view_mode = st.radio(
             "View Mode",
             ["Interactive", "Presentation"],
@@ -154,8 +133,9 @@ if config.get("event_folder"):
         
         if not filtered_df.empty:
             dt_format = "%Y-%m-%d %H:%M"
-            filtered_df['Start Time'] = filtered_df['Start Time'].dt.strftime(dt_format)
-            filtered_df['End Time'] = filtered_df['End Time'].dt.strftime(dt_format)
+            for col in ['Start Time', 'End Time']:
+                if col in filtered_df.columns:
+                     filtered_df[col] = filtered_df[col].dt.strftime(dt_format)
 
             display_cols_config = {
                 "Japanese": [
@@ -174,36 +154,33 @@ if config.get("event_folder"):
             }
             
             header_labels = {
-                "Icon": "Icon",
-                "Display Type": "Type",
-                "Start Time": "Start",
-                "End Time": "End",
-                "Duration": "Days",
-                "Featured Heroes (EN)": "Feat.(EN)",
-                "Non-Featured Heroes (EN)": "Non-Feat.(EN)",
-                "Featured Heroes (JA)": "Feat.(JA)",
-                "Non-Featured Heroes (JA)": "Non-Feat.(JA)",
+                "Icon": "Icon", "Display Type": "Type", "Start Time": "Start",
+                "End Time": "End", "Duration": "Days",
+                "Featured Heroes (EN)": "Feat.(EN)", "Non-Featured Heroes (EN)": "Non-Feat.(EN)",
+                "Featured Heroes (JA)": "Feat.(JA)", "Non-Featured Heroes (JA)": "Non-Feat.(JA)",
                 "Event Name": "Event ID"
             }
 
-            column_order = [col for col in display_cols_config[display_mode] if col in filtered_df.columns]
+            base_cols = display_cols_config[display_mode]
+            column_order = [col for col in base_cols if col in filtered_df.columns]
 
             if view_mode == "Interactive":
                 if 'Event Name' in filtered_df.columns:
                     column_order.append('Event Name')
             
-            final_df = filtered_df.reindex(columns=column_order).fillna('')
+            final_df = filtered_df.reindex(columns=column_order + ['_diff_status', '_changed_columns']).fillna('')
 
             if view_mode == "Interactive":
+                interactive_df = final_df.drop(columns=['_diff_status', '_changed_columns'], errors='ignore')
                 column_config_interactive = {
                     "Icon": st.column_config.ImageColumn("Icon", help="Event Icon")
                 }
                 for col_name, label in header_labels.items():
-                    if col_name != "Icon" and col_name in final_df.columns:
+                    if col_name != "Icon" and col_name in interactive_df.columns:
                         column_config_interactive[col_name] = st.column_config.Column(label)
-
+                
                 st.data_editor(
-                    final_df,
+                    interactive_df,
                     column_config=column_config_interactive,
                     hide_index=True,
                     use_container_width=True,
@@ -211,6 +188,7 @@ if config.get("event_folder"):
             elif view_mode == "Presentation":
                 html_table = to_html_table(final_df, header_labels)
                 st.markdown(html_table, unsafe_allow_html=True)
+
         else:
             st.warning("No events found in the selected date range.")
 
@@ -224,5 +202,6 @@ if config.get("event_folder"):
                     else: st.success("Hero master generated!"); st.rerun()
     except Exception as e:
         st.error(f"Failed to load or process data: {e}")
+        st.exception(e)
 else:
     st.info("Please specify data folders in the sidebar and click 'Load Data'.")
