@@ -77,10 +77,9 @@ def format_dataframe_for_display(df, type_mapping_rules, en_map, ja_map, timezon
 
     return df_copy
 
-def to_html_table(df, header_labels=None, columns_to_display=None):
+def to_html_table(df, header_labels=None, columns_to_display=None, data_dir=None):
     if header_labels is None: header_labels = {}
 
-    # 表示対象の列が指定されていなければ、内部情報列を除いた全列を表示
     if columns_to_display is None:
         internal_cols = ['_diff_status', '_changed_columns']
         columns_to_display = [col for col in df.columns if col not in internal_cols]
@@ -124,10 +123,14 @@ def to_html_table(df, header_labels=None, columns_to_display=None):
                     cell_classes.append('diff-cell-highlight-hero-nonfeat')
             
             cell_content = ""
-            if isinstance(cell_value, list):
+            if col_name == 'questline' and data_dir and isinstance(cell_value, str) and cell_value.startswith("img_gen="):
+                params = f"data_dir={data_dir}&{cell_value}"
+                # 独立した image_gen_app を指すようにURLを修正
+                cell_content = f'<a href="/image_gen_app?{params}" target="_blank">Generate Image</a>'
+            elif isinstance(cell_value, list):
                 cell_content = "<br>".join(map(str, cell_value))
             elif isinstance(cell_value, str):
-                if cell_value.startswith("http"):
+                if cell_value.startswith(BASE_ICON_URL):
                     cell_content = f'<img src="{cell_value}" class="icon-image">'
                 else:
                     cell_content = cell_value.replace("\n", "<br>")

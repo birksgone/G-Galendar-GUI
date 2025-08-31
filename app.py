@@ -174,7 +174,7 @@ if config.get("event_folder"):
             final_df = filtered_df.copy()
             
             st.markdown('<div class="table-container">', unsafe_allow_html=True)
-            html_table = to_html_table(final_df, header_labels, columns_to_display=selected_user_cols)
+            html_table = to_html_table(final_df, header_labels, columns_to_display=selected_user_cols, data_dir=latest_folder)
             st.markdown(html_table, unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
