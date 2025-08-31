@@ -30,8 +30,7 @@ def initialize_files():
             "event_folder": "", "diff_folder": "",
             "filter_start_date": date.today().isoformat(),
             "filter_end_date": (date.today() + pd.Timedelta(days=30)).isoformat(),
-            "timezone": "UTC", "display_mode": "Japanese",
-            "view_mode_index": 0
+            "timezone": "UTC",
         }
         save_json_file(CONFIG_FILE, default_config)
 
@@ -79,7 +78,6 @@ if st.sidebar.button("Load Data", key="load_data_button"):
     config['event_folder'] = latest_folder
     config['diff_folder'] = diff_folder
     save_json_file(CONFIG_FILE, config)
-    save_to_history(EVENT_HISTORY_FILE, latest_folder)
     st.rerun()
 
 if config.get("event_folder"):
@@ -97,19 +95,20 @@ if config.get("event_folder"):
         en_map, ja_map = create_translation_dicts(data['hero_master_df'], data['g_sheet_df'])
         
         st.header(f"Event Display: `{config['event_folder']}`")
-        c1, c2, c3, c4 = st.columns([1, 1, 1, 3])
-        start_date_val = date.fromisoformat(config.get('filter_start_date', date.today().isoformat()))
-        end_date_val = date.fromisoformat(config.get('filter_end_date', date.today().isoformat()))
-        start_date_filter = c1.date_input("Start date", value=start_date_val)
-        end_date_filter = c2.date_input("End date", value=end_date_val)
-        display_mode = c3.radio("Language", ["Japanese", "English", "Both"], index=["Japanese", "English", "Both"].index(config.get("display_mode", "Japanese")))
-        timezone = c4.radio("Timezone", ["UTC", "JST"], index=["UTC", "JST"].index(config.get("timezone", "UTC")), horizontal=True)
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            start_date_val = date.fromisoformat(config.get('filter_start_date', date.today().isoformat()))
+            start_date_filter = st.date_input("Start date", value=start_date_val)
+        with col2:
+            end_date_val = date.fromisoformat(config.get('filter_end_date', date.today().isoformat()))
+            end_date_filter = st.date_input("End date", value=end_date_val)
+        with col3:
+            timezone = st.selectbox("Timezone", ["UTC", "JST"], index=["UTC", "JST"].index(config.get("timezone", "UTC")))
 
         config_changed = False
         if start_date_filter.isoformat() != config.get('filter_start_date'): config['filter_start_date'] = start_date_filter.isoformat(); config_changed = True
         if end_date_filter.isoformat() != config.get('filter_end_date'): config['filter_end_date'] = end_date_filter.isoformat(); config_changed = True
         if timezone != config.get('timezone'): config['timezone'] = timezone; config_changed = True
-        if display_mode != config.get('display_mode'): config['display_mode'] = display_mode; config_changed = True
         if config_changed: save_json_file(CONFIG_FILE, config)
 
         display_df = format_dataframe_for_display(comparison_df, rules, en_map, ja_map, timezone)
@@ -120,86 +119,67 @@ if config.get("event_folder"):
         filtered_df = display_df[display_df['Start Time'].between(start_dt_aware, end_dt_aware)].copy()
         
         st.subheader("Filtered Event List")
-        view_mode = st.radio(
-            "View Mode",
-            ["Interactive", "Presentation"],
-            horizontal=True,
-            index=config.get("view_mode_index", 0),
-        )
-        new_view_mode_index = ["Interactive", "Presentation"].index(view_mode)
-        if new_view_mode_index != config.get("view_mode_index"):
-            config["view_mode_index"] = new_view_mode_index
-            save_json_file(CONFIG_FILE, config)
         
         if not filtered_df.empty:
+            # 日付を文字列フォーマットに戻す処理
             dt_format = "%Y-%m-%d %H:%M"
             for col in ['Start Time', 'End Time']:
-                if col in filtered_df.columns:
+                if col in filtered_df.columns and pd.api.types.is_datetime64_any_dtype(filtered_df[col]):
                      filtered_df[col] = filtered_df[col].dt.strftime(dt_format)
 
-            display_cols_config = {
-                "Japanese": [
-                    'Icon', 'Display Type', 'Start Time', 'End Time', 'Duration',
-                    'Featured Heroes (JA)', 'Non-Featured Heroes (JA)'
-                ],
-                "English": [
-                    'Icon', 'Display Type', 'Start Time', 'End Time', 'Duration',
-                    'Featured Heroes (EN)', 'Non-Featured Heroes (EN)'
-                ],
-                "Both": [
-                    'Icon', 'Display Type', 'Start Time', 'End Time', 'Duration',
-                    'Featured Heroes (EN)', 'Non-Featured Heroes (EN)',
-                    'Featured Heroes (JA)', 'Non-Featured Heroes (JA)'
-                ]
-            }
-            
             header_labels = {
-                "Icon": "Icon", "Display Type": "Type", "Start Time": "Start",
-                "End Time": "End", "Duration": "Days",
+                "Icon": "Icon", "Display Type": "Type", "Start Time": "Start", "End Time": "End", "Duration": "Days",
                 "Featured Heroes (EN)": "Feat.(EN)", "Non-Featured Heroes (EN)": "Non-Feat.(EN)",
                 "Featured Heroes (JA)": "Feat.(JA)", "Non-Featured Heroes (JA)": "Non-Feat.(JA)",
-                "Event Name": "Event ID"
+                "Event Name": "Event ID", "_diff_status": "Diff Status", "_changed_columns": "Changed Parts"
             }
+            all_df_columns = display_df.columns.tolist()
+            for col in all_df_columns:
+                if col not in header_labels:
+                    header_labels[col] = col
+            label_to_col_map = {v: k for k, v in header_labels.items()}
 
-            base_cols = display_cols_config[display_mode]
-            column_order = [col for col in base_cols if col in filtered_df.columns]
-
-            if view_mode == "Interactive":
-                if 'Event Name' in filtered_df.columns:
-                    column_order.append('Event Name')
+            presets = {
+                "Standard": ['Icon', 'Display Type', 'Start Time', 'End Time', 'Duration', 
+                             'Featured Heroes (EN)', 'Non-Featured Heroes (EN)', 
+                             'Featured Heroes (JA)', 'Non-Featured Heroes (JA)'],
+                "All Columns": all_df_columns
+            }
             
-            final_df = filtered_df.reindex(columns=column_order + ['_diff_status', '_changed_columns']).fillna('')
+            # --- UI: プリセット選択 ---
+            preset_choice = st.radio("Presets", list(presets.keys()), horizontal=True, key="preset_radio")
+            
+            # --- UI: 列の個別カスタマイズ ---
+            with st.expander("Customize Columns", expanded=False):
+                standard_cols = presets["Standard"]
+                other_cols = sorted([col for col in all_df_columns if col not in standard_cols])
+                ordered_all_cols = standard_cols + other_cols
 
-            if view_mode == "Interactive":
-                interactive_df = final_df.drop(columns=['_diff_status', '_changed_columns'], errors='ignore')
-                column_config_interactive = {
-                    "Icon": st.column_config.ImageColumn("Icon", help="Event Icon")
-                }
-                for col_name, label in header_labels.items():
-                    if col_name != "Icon" and col_name in interactive_df.columns:
-                        column_config_interactive[col_name] = st.column_config.Column(label)
-                
-                st.data_editor(
-                    interactive_df,
-                    column_config=column_config_interactive,
-                    hide_index=True,
-                    use_container_width=True,
+                if 'selected_cols' not in st.session_state:
+                    st.session_state.selected_cols = presets["Standard"]
+                if st.session_state.get('current_preset') != preset_choice:
+                    st.session_state.selected_cols = presets[preset_choice]
+                    st.session_state.current_preset = preset_choice
+
+                selected_labels = st.multiselect(
+                    "Select columns to display:",
+                    options=[header_labels.get(col, col) for col in ordered_all_cols],
+                    default=[header_labels.get(col, col) for col in st.session_state.selected_cols if col in header_labels],
                 )
-            elif view_mode == "Presentation":
-                html_table = to_html_table(final_df, header_labels)
-                st.markdown(html_table, unsafe_allow_html=True)
+                st.session_state.selected_cols = [label_to_col_map[label] for label in selected_labels]
+
+            # --- テーブル生成 ---
+            selected_user_cols = st.session_state.selected_cols
+            final_df = filtered_df.copy()
+            
+            st.markdown('<div class="table-container">', unsafe_allow_html=True)
+            html_table = to_html_table(final_df, header_labels, columns_to_display=selected_user_cols)
+            st.markdown(html_table, unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
         else:
             st.warning("No events found in the selected date range.")
 
-    except FileNotFoundError as e:
-         st.warning(f"Master CSV not found for '{config['event_folder']}'. Please generate it.")
-         if st.button("Generate Hero Master Now"):
-                command = [sys.executable, HERO_GEN_SCRIPT_PATH, "--version_folder", config["event_folder"], "--cutoff_date", "2300-01-01"]
-                with st.spinner(f"Running hero generator script..."):
-                    result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8', errors='replace')
-                    if result.returncode != 0: st.error(result.stderr or result.stdout); st.stop()
-                    else: st.success("Hero master generated!"); st.rerun()
     except Exception as e:
         st.error(f"Failed to load or process data: {e}")
         st.exception(e)

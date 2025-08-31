@@ -1,81 +1,85 @@
 .styled-table {
     border-collapse: collapse;
-    margin: 2px 0;
+    margin: 0;
     font-size: 0.8em;
-    line-height: 1em;
+    line-height: 1.2em;
     font-family: 'Lexend Deca', sans-serif;
-    width: 100%;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
     background-color: #262730;
-    table-layout: fixed;
-    word-wrap: break-word;
+    width: auto;
+    white-space: nowrap;
 }
 
-.styled-table thead tr {
+.styled-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     background-color: #1a1a2e;
-    color: #ffffff;
-    text-align: left;
 }
 
 .styled-table th,
 .styled-table td {
-    padding: 4px 2px;
+    padding: 8px 10px;
     text-align: left;
     vertical-align: top;
     color: #e0e0e0;
     border-bottom: 1px solid #4f4f4f;
+    border-right: 1px solid #4f4f4f;
+}
+.styled-table th:first-child,
+.styled-table td:first-child {
+    border-left: 1px solid #4f4f4f;
 }
 
-.styled-table tbody tr {
-    border-bottom: 1px solid #3e3e3e;
-    transition: background-color 0.2s ease;
-}
 
 .styled-table tbody tr:hover {
     background-color: #3b3b4f;
 }
 
-.styled-table tbody tr:last-of-type {
-    border-bottom: 2px solid #1a1a2e;
+.table-container {
+    overflow: auto;
+    max-height: 75vh;
+    width: 100%;
 }
 
-/* --- Icon and Column Width Control --- */
 .icon-image {
     max-height: 24px;
     vertical-align: middle;
 }
 
-.col-icon           { width: 40px; }
-.col-display-type   { width: 120px; }
-.col-start-time,
-.col-end-time       { width: 120px; }
-.col-duration       { width: 40px; }
-
-.col-featured-heroes-en,
-.col-non-featured-heroes-en,
-.col-featured-heroes-ja,
-.col-non-featured-heroes-ja { width: auto; }
-
-/* --- Diff Highlight Styles --- */
-.diff-new {
-    background-color: #2a4c3a; /* 新規: 緑系 */
+/* --- スクロールバーのスタイル --- */
+.table-container::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+.table-container::-webkit-scrollbar-track {
+    background: #2e2e3e;
+}
+.table-container::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 10px;
+    border: 3px solid #2e2e3e;
 }
 
-.diff-modified {
-    background-color: #2a3a4c; /* 日時変更: 青系 */
-}
+/* --- 列幅指定 --- */
+.col-icon { min-width: 40px; }
+.col-type { min-width: 150px; }
+.col-start, .col-end { min-width: 130px; }
+.col-days { min-width: 50px; }
+.col-feat-en, .col-non-feat-en,
+.col-feat-ja, .col-non-feat-ja { min-width: 200px; }
+.col-event-id, .col-advertisedhero, .col-questline { min-width: 200px; }
+.col-diff-status { min-width: 100px; }
+.col-changed-parts { min-width: 180px; }
+.col-c1, .col-c2, .col-c3, .col-c4, .col-c5, .col-c6,
+.col-h1, .col-h2, .col-h3, .col-h4, .col-h5, .col-h6 { min-width: 180px; }
+.col-h1-new, .col-h2-new, .col-h3-new, .col-h4-new, .col-h5-new, .col-h6-new,
+.col-c1-new, .col-c2-new, .col-c3-new, .col-c4-new, .col-c5-new, .col-c6-new { min-width: 80px; }
 
-.diff-deleted {
-    background-color: #333333; /* 削除: グレー */
-    color: #888888;
-    text-decoration: line-through;
-    opacity: 0.7;
-}
 
-.diff-cell-highlight-hero {
-    background-color: #5a522a; /* Featured Hero変更: 黄色系 */
-}
-
-.diff-cell-highlight-hero-nonfeat {
-    background-color: #5a2a2a; /* Non-Featured Hero変更: 赤系 */
-}
+/* --- 差分ハイライト --- */
+.diff-new { background-color: #2a4c3a; }
+.diff-modified { background-color: #2a3a4c; }
+.diff-deleted { background-color: #333333; color: #888888; text-decoration: line-through; opacity: 0.7; }
+.diff-cell-highlight-hero { background-color: #5a522a; }
+.diff-cell-highlight-hero-nonfeat { background-color: #5a2a2a; }

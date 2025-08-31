@@ -7,5 +7,17 @@
   "timezone": "UTC",
   "display_mode": "Both",
   "hero_display_format": "Consolidated",
-  "view_mode_index": 0
+  "view_mode_index": 0,
+  "selected_columns": [
+    "Icon",
+    "Display Type",
+    "Start Time",
+    "End Time",
+    "Duration",
+    "Featured Heroes (EN)",
+    "Non-Featured Heroes (EN)",
+    "Featured Heroes (JA)",
+    "Non-Featured Heroes (JA)",
+    "Event Name"
+  ]
 }

@@ -77,28 +77,32 @@ def format_dataframe_for_display(df, type_mapping_rules, en_map, ja_map, timezon
 
     return df_copy
 
-def to_html_table(df, header_labels=None):
+def to_html_table(df, header_labels=None, columns_to_display=None):
     if header_labels is None: header_labels = {}
-    
+
+    # 表示対象の列が指定されていなければ、内部情報列を除いた全列を表示
+    if columns_to_display is None:
+        internal_cols = ['_diff_status', '_changed_columns']
+        columns_to_display = [col for col in df.columns if col not in internal_cols]
+
     def sanitize_for_classname(text):
+        text = str(text)
         text = text.lower()
-        text = re.sub(r'[\s\(\)]+', '-', text)
+        text = re.sub(r'[\s\(\)\.]+', '-', text)
         text = re.sub(r'[^a-z0-9-]', '', text)
         return f"col-{text.strip('-')}"
-    
+
     table_html = '<table class="styled-table">'
-    
+
     header_cells = []
-    col_classnames = []
-    for col in df.columns:
-        classname = sanitize_for_classname(col)
-        col_classnames.append(classname)
+    col_classnames = {col: sanitize_for_classname(header_labels.get(col, col)) for col in columns_to_display}
+    for col in columns_to_display:
         display_name = header_labels.get(col, col)
-        header_cells.append(f'<th class="{classname}">{display_name}</th>')
+        header_cells.append(f'<th class="{col_classnames[col]}">{display_name}</th>')
     
     header_html = "".join(header_cells)
     table_html += f"<thead><tr>{header_html}</tr></thead>"
-    
+
     body_rows_html = []
     for index, row in df.iterrows():
         diff_status = row.get('_diff_status', 'unchanged')
@@ -106,9 +110,9 @@ def to_html_table(df, header_labels=None):
         row_class = f'diff-{diff_status}'
         row_html = f'<tr class="{row_class}">'
         
-        for i, col_name in enumerate(df.columns):
-            cell_value = row[col_name]
-            classname = col_classnames[i]
+        for col_name in columns_to_display:
+            cell_value = row.get(col_name)
+            classname = col_classnames[col_name]
             cell_classes = [classname]
             
             if diff_status == 'modified':
