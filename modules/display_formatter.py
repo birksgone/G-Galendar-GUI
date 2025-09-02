@@ -88,7 +88,7 @@ def to_html_table(df, header_labels=None, columns_to_display=None, data_dir=None
         text = str(text)
         text = text.lower()
         text = re.sub(r'[\s\(\)\.]+', '-', text)
-        text = re.sub(r'[^a-z0-9-]', '', text)
+        text = re.sub(r'[^a-z0-g-]', '', text)
         return f"col-{text.strip('-')}"
 
     table_html = '<table class="styled-table">'
@@ -124,9 +124,9 @@ def to_html_table(df, header_labels=None, columns_to_display=None, data_dir=None
             
             cell_content = ""
             if col_name == 'questline' and data_dir and isinstance(cell_value, str) and cell_value.startswith("img_gen="):
-                params = f"data_dir={data_dir}&{cell_value}"
-                # 独立した image_gen_app を指すようにURLを修正
-                cell_content = f'<a href="/image_gen_app?{params}" target="_blank">Generate Image</a>'
+                # action=generate_image パラメータを追加し、メインアプリのルートを指すように修正
+                params = f"action=generate_image&data_dir={data_dir}&{cell_value}"
+                cell_content = f'<a href="/?{params}" target="_self">Generate Image</a>'
             elif isinstance(cell_value, list):
                 cell_content = "<br>".join(map(str, cell_value))
             elif isinstance(cell_value, str):

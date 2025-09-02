@@ -670,5 +670,13 @@
     ],
     "output": "B.FRIDAY",
     "icon": "offericon_blackfriday2019.png"
+  },
+  {
+    "priority": 841,
+    "conditions": [
+      { "column": "event", "operator": "contains", "value": "soul_exchange_" }
+    ],
+    "output": "Soul Exchange",
+    "icon": "soulexchange.png"
   }
 ]
