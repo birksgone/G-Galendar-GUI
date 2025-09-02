@@ -12,8 +12,6 @@ from modules.data_loader import load_all_data
 from modules.translation_engine import create_translation_dicts
 from modules.display_formatter import format_dataframe_for_display, to_html_table
 from modules.diff_engine import compare_dataframes
-from modules.image_generator import generate_image
-
 
 DATA_DIR = Path("data")
 CONFIG_FILE = DATA_DIR / "config.json"
@@ -59,172 +57,151 @@ def save_to_history(filepath, new_entry):
     if new_entry: history.insert(0, new_entry)
     with open(filepath, "w", encoding="utf-8") as f: f.write("\n".join(history))
 
+@st.cache_data
+def load_and_process_data(latest_folder, diff_folder):
+    """
+    データの読み込み、差分比較、翻訳マップ作成までを一括で行う。
+    結果はStreamlitによってキャッシュされる。
+    """
+    data = load_all_data(latest_folder, diff_folder)
+    
+    comparison_df = None
+    if data['diff_df'] is not None:
+        comparison_df = compare_dataframes(data['main_df'], data['diff_df'])
+    else:
+        comparison_df = data['main_df'].copy()
+        comparison_df['_diff_status'] = 'unchanged'
+        comparison_df['_changed_columns'] = [[] for _ in range(len(comparison_df))]
+
+    en_map, ja_map = create_translation_dicts(data['hero_master_df'], data['g_sheet_df'])
+    
+    return comparison_df, en_map, ja_map
+
 st.set_page_config(layout="wide")
 inject_custom_css()
 st.title("Event Calendar Management Dashboard")
 
-# --- ポップアップ処理 & ページルーティング ---
-if 'show_image_dialog' not in st.session_state:
-    st.session_state.show_image_dialog = False
-if 'image_result' not in st.session_state:
-    st.session_state.image_result = None
+initialize_files()
+config = load_json_file(CONFIG_FILE)
+rules = load_json_file(RULES_FILE, [])
 
-query_params = st.query_params
-if "action" in query_params and query_params.get("action") == "generate_image":
+st.sidebar.header("Select Data Sources")
+latest_folder = st.sidebar.text_input("① Latest Data (Required)", value=config.get("event_folder"))
+event_history = load_history(EVENT_HISTORY_FILE)
+diff_options = [h for h in event_history if h != latest_folder]
+if not diff_options:
+    diff_folder = st.sidebar.selectbox("② Previous Data for Diff", ["No options"], disabled=True)
+else:
+    current_diff = config.get("diff_folder")
+    index = diff_options.index(current_diff) if current_diff in diff_options else 0
+    diff_folder = st.sidebar.selectbox("② Previous Data for Diff", diff_options, index=index)
+
+if st.sidebar.button("Load Data", key="load_data_button"):
+    config['event_folder'] = latest_folder
+    config['diff_folder'] = diff_folder
+    save_json_file(CONFIG_FILE, config)
+    st.rerun()
+        
+if latest_folder:
     try:
-        # image_generatorに処理を丸投げ
-        generate_image(query_params.to_dict())
-        st.session_state.show_image_dialog = True
-    except Exception as e:
-        st.error(f"画像生成の準備中にエラーが発生しました: {e}")
-    finally:
-        # URLをクリアしてリロード時の再実行を防ぐ
-        st.query_params.clear()
+        comparison_df, en_map, ja_map = load_and_process_data(latest_folder, diff_folder)
+        
+        if not comparison_df.empty:
+            if st.sidebar.button("✍️ Forum Post", key="forum_post_button"):
+                diff_df = comparison_df[comparison_df['_diff_status'] != 'unchanged'].copy()
+                if not diff_df.empty:
+                    st.session_state['diff_data'] = diff_df
+                    st.session_state['en_map'] = en_map
+                    st.session_state['ja_map'] = ja_map
+                    st.switch_page("pages/1_Forum_Post_Creator.py")
+                else:
+                    st.sidebar.warning("No differences found.")
+        
+        st.header(f"Event Display: `{latest_folder}`")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            start_date_val = date.fromisoformat(config.get('filter_start_date', date.today().isoformat()))
+            start_date_filter = st.date_input("Start date", value=start_date_val)
+        with col2:
+            end_date_val = date.fromisoformat(config.get('filter_end_date', date.today().isoformat()))
+            end_date_filter = st.date_input("End date", value=end_date_val)
+        with col3:
+            timezone = st.selectbox("Timezone", ["UTC", "JST"], index=["UTC", "JST"].index(config.get("timezone", "UTC")))
 
-if st.session_state.show_image_dialog:
-    @st.dialog("Image Generation Result")
-    def image_dialog():
-        result = st.session_state.image_result
-        if result:
-            st.write("Prepared Hero Data:")
-            st.json(result)
-            st.info("ここにPillowで生成された画像が表示されます。")
+        config_changed = False
+        if start_date_filter.isoformat() != config.get('filter_start_date'): config['filter_start_date'] = start_date_filter.isoformat(); config_changed = True
+        if end_date_filter.isoformat() != config.get('filter_end_date'): config['filter_end_date'] = end_date_filter.isoformat(); config_changed = True
+        if timezone != config.get('timezone'): config['timezone'] = timezone; config_changed = True
+        if config_changed: save_json_file(CONFIG_FILE, config)
+
+        display_df = format_dataframe_for_display(comparison_df, rules, en_map, ja_map, timezone)
+
+        start_dt_aware = pd.to_datetime(start_date_filter).tz_localize(display_df['Start Time'].dt.tz)
+        end_dt_aware = (pd.to_datetime(end_date_filter) + pd.Timedelta(days=1, seconds=-1)).tz_localize(display_df['Start Time'].dt.tz)
+        
+        filtered_df = display_df[display_df['Start Time'].between(start_dt_aware, end_dt_aware)].copy()
+        
+        st.subheader("Filtered Event List")
+        
+        if not filtered_df.empty:
+            dt_format = "%Y-%m-%d %H:%M"
+            for col in ['Start Time', 'End Time']:
+                if col in filtered_df.columns and pd.api.types.is_datetime64_any_dtype(filtered_df[col]):
+                     filtered_df[col] = filtered_df[col].dt.strftime(dt_format)
+
+            header_labels = {
+                "Icon": "Icon", "Display Type": "Type", "Start Time": "Start", "End Time": "End", "Duration": "Days",
+                "Featured Heroes (EN)": "Feat.(EN)", "Non-Featured Heroes (EN)": "Non-Feat.(EN)",
+                "Featured Heroes (JA)": "Feat.(JA)", "Non-Featured Heroes (JA)": "Non-Feat.(JA)",
+                "Event Name": "Event ID", "_diff_status": "Diff Status", "_changed_columns": "Changed Parts"
+            }
+            all_df_columns = display_df.columns.tolist()
+            for col in all_df_columns:
+                if col not in header_labels:
+                    header_labels[col] = col
+            label_to_col_map = {v: k for k, v in header_labels.items()}
+
+            standard_cols = ['Icon', 'Display Type', 'questline', 'Start Time', 'End Time', 'Duration',
+                             'Featured Heroes (EN)', 'Non-Featured Heroes (EN)',
+                             'Featured Heroes (JA)', 'Non-Featured Heroes (JA)']
+            
+            other_cols = sorted([col for col in all_df_columns if col not in standard_cols])
+            ordered_all_cols = standard_cols + other_cols
+
+            presets = {
+                "Standard": standard_cols,
+                "All Columns": ordered_all_cols
+            }
+            
+            preset_choice = st.radio("Presets", list(presets.keys()), horizontal=True, key="preset_radio")
+            
+            with st.expander("Customize Columns", expanded=False):
+                if 'selected_cols' not in st.session_state:
+                    st.session_state.selected_cols = presets["Standard"]
+                if st.session_state.get('current_preset') != preset_choice:
+                    st.session_state.selected_cols = presets[preset_choice]
+                    st.session_state.current_preset = preset_choice
+
+                selected_labels = st.multiselect(
+                    "Select columns to display:",
+                    options=[header_labels.get(col, col) for col in ordered_all_cols],
+                    default=[header_labels.get(col, col) for col in st.session_state.selected_cols if col in header_labels],
+                )
+                st.session_state.selected_cols = [label_to_col_map[label] for label in selected_labels]
+
+            selected_user_cols = st.session_state.selected_cols
+            final_df = filtered_df.copy()
+            
+            st.markdown('<div class="table-container">', unsafe_allow_html=True)
+            html_table = to_html_table(final_df, header_labels, columns_to_display=selected_user_cols, data_dir=latest_folder)
+            st.markdown(html_table, unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+
         else:
-            st.warning("画像データを生成できませんでした。")
+            st.warning("No events found in the selected date range.")
 
-        if st.button("Close"):
-            st.session_state.show_image_dialog = False
-            st.session_state.image_result = None
-            st.rerun()
-
-    image_dialog()
-
-# --- メインのテーブル表示処理 ---
-if not st.session_state.show_image_dialog:
-    initialize_files()
-    config = load_json_file(CONFIG_FILE)
-    rules = load_json_file(RULES_FILE, [])
-
-    st.sidebar.header("Select Data Sources")
-    latest_folder = st.sidebar.text_input("① Latest Data (Required)", value=config.get("event_folder"))
-    event_history = load_history(EVENT_HISTORY_FILE)
-    diff_options = [h for h in event_history if h != latest_folder]
-    if not diff_options:
-        diff_folder = st.sidebar.selectbox("② Previous Data for Diff", ["No options"], disabled=True)
-    else:
-        current_diff = config.get("diff_folder")
-        index = diff_options.index(current_diff) if current_diff in diff_options else 0
-        diff_folder = st.sidebar.selectbox("② Previous Data for Diff", diff_options, index=index)
-
-    if st.sidebar.button("Load Data", key="load_data_button"):
-        config['event_folder'] = latest_folder
-        config['diff_folder'] = diff_folder
-        save_json_file(CONFIG_FILE, config)
-        st.rerun()
-
-    if config.get("event_folder"):
-        try:
-            data = load_all_data(config["event_folder"], config.get("diff_folder"))
-            
-            comparison_df = None
-            if data['diff_df'] is not None:
-                comparison_df = compare_dataframes(data['main_df'], data['diff_df'])
-            else:
-                comparison_df = data['main_df'].copy()
-                comparison_df['_diff_status'] = 'unchanged'
-                comparison_df['_changed_columns'] = [[] for _ in range(len(comparison_df))]
-
-            en_map, ja_map = create_translation_dicts(data['hero_master_df'], data['g_sheet_df'])
-            
-            st.header(f"Event Display: `{config['event_folder']}`")
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                start_date_val = date.fromisoformat(config.get('filter_start_date', date.today().isoformat()))
-                start_date_filter = st.date_input("Start date", value=start_date_val)
-            with col2:
-                end_date_val = date.fromisoformat(config.get('filter_end_date', date.today().isoformat()))
-                end_date_filter = st.date_input("End date", value=end_date_val)
-            with col3:
-                timezone = st.selectbox("Timezone", ["UTC", "JST"], index=["UTC", "JST"].index(config.get("timezone", "UTC")))
-
-            config_changed = False
-            if start_date_filter.isoformat() != config.get('filter_start_date'): config['filter_start_date'] = start_date_filter.isoformat(); config_changed = True
-            if end_date_filter.isoformat() != config.get('filter_end_date'): config['filter_end_date'] = end_date_filter.isoformat(); config_changed = True
-            if timezone != config.get('timezone'): config['timezone'] = timezone; config_changed = True
-            if config_changed: save_json_file(CONFIG_FILE, config)
-
-            display_df = format_dataframe_for_display(comparison_df, rules, en_map, ja_map, timezone)
-
-            start_dt_aware = pd.to_datetime(start_date_filter).tz_localize(display_df['Start Time'].dt.tz)
-            end_dt_aware = (pd.to_datetime(end_date_filter) + pd.Timedelta(days=1, seconds=-1)).tz_localize(display_df['Start Time'].dt.tz)
-            
-            filtered_df = display_df[display_df['Start Time'].between(start_dt_aware, end_dt_aware)].copy()
-            
-            st.subheader("Filtered Event List")
-            
-            if not filtered_df.empty:
-                # 日付を文字列フォーマットに戻す処理
-                dt_format = "%Y-%m-%d %H:%M"
-                for col in ['Start Time', 'End Time']:
-                    if col in filtered_df.columns and pd.api.types.is_datetime64_any_dtype(filtered_df[col]):
-                         filtered_df[col] = filtered_df[col].dt.strftime(dt_format)
-
-                header_labels = {
-                    "Icon": "Icon", "Display Type": "Type", "Start Time": "Start", "End Time": "End", "Duration": "Days",
-                    "Featured Heroes (EN)": "Feat.(EN)", "Non-Featured Heroes (EN)": "Non-Feat.(EN)",
-                    "Featured Heroes (JA)": "Feat.(JA)", "Non-Featured Heroes (JA)": "Non-Feat.(JA)",
-                    "Event Name": "Event ID", "_diff_status": "Diff Status", "_changed_columns": "Changed Parts"
-                }
-                all_df_columns = display_df.columns.tolist()
-                for col in all_df_columns:
-                    if col not in header_labels:
-                        header_labels[col] = col
-                label_to_col_map = {v: k for k, v in header_labels.items()}
-
-                standard_cols = ['Icon', 'Display Type', 'questline', 'Start Time', 'End Time', 'Duration',
-                                 'Featured Heroes (EN)', 'Non-Featured Heroes (EN)',
-                                 'Featured Heroes (JA)', 'Non-Featured Heroes (JA)']
-                
-                other_cols = sorted([col for col in all_df_columns if col not in standard_cols])
-                ordered_all_cols = standard_cols + other_cols
-
-                presets = {
-                    "Standard": standard_cols,
-                    "All Columns": ordered_all_cols
-                }
-                
-                # --- UI: プリセット選択 ---
-                preset_choice = st.radio("Presets", list(presets.keys()), horizontal=True, key="preset_radio")
-                
-                # --- UI: 列の個別カスタマイズ ---
-                with st.expander("Customize Columns", expanded=False):
-                    if 'selected_cols' not in st.session_state:
-                        st.session_state.selected_cols = presets["Standard"]
-                    if st.session_state.get('current_preset') != preset_choice:
-                        st.session_state.selected_cols = presets[preset_choice]
-                        st.session_state.current_preset = preset_choice
-
-                    selected_labels = st.multiselect(
-                        "Select columns to display:",
-                        options=[header_labels.get(col, col) for col in ordered_all_cols],
-                        default=[header_labels.get(col, col) for col in st.session_state.selected_cols if col in header_labels],
-                    )
-                    st.session_state.selected_cols = [label_to_col_map[label] for label in selected_labels]
-
-                # --- テーブル生成 ---
-                selected_user_cols = st.session_state.selected_cols
-                final_df = filtered_df.copy()
-                
-                st.markdown('<div class="table-container">', unsafe_allow_html=True)
-                html_table = to_html_table(final_df, header_labels, columns_to_display=selected_user_cols, data_dir=latest_folder)
-                st.markdown(html_table, unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
-
-            else:
-                st.warning("No events found in the selected date range.")
-
-        except Exception as e:
-            st.error(f"Failed to load or process data: {e}")
-            st.exception(e)
-    else:
-        st.info("Please specify data folders in the sidebar and click 'Load Data'.")
+    except Exception as e:
+        st.error(f"Failed to load or process data: {e}")
+        st.exception(e)
+else:
+    st.info("Please specify data folders in the sidebar and click 'Load Data'.")
