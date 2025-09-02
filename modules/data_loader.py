@@ -1,27 +1,50 @@
+# modules/data_loader.py
+
 import streamlit as st
 import pandas as pd
 from pathlib import Path
-import gspread
 from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseDownload
+import io
 
-# --- Constants related to data loading ---
+# --- 定数定義 ---
 EVENT_BASE_DIR = Path("D:/PyScript/EMP Extract/")
 GCP_CREDS_PATH = "client_secret.json"
-GOOGLE_SHEET_ID = "18Qv901QZ8irS1wYh-jbFIPFdsrUFZ01AB6EcN7SX5qM"
-GOOGLE_SHEET_NAME = "ALLH"
+HERO_MASTER_CSV_ID = '1rpfF9gNclicG0wwtY_EMKKdlqsRBSKjB' # Google Drive上のhero_master.csvのファイルID
+SCOPES = [
+    'https://www.googleapis.com/auth/drive.readonly'      # Google Drive読み取り用
+]
+
+@st.cache_data
+def load_hero_master_from_drive():
+    """
+    Google Driveからhero_master.csvをダウンロードし、DataFrameとして返す。
+    """
+    st.write("Loading hero master from Google Drive...")
+    creds = Credentials.from_service_account_file(GCP_CREDS_PATH, scopes=SCOPES)
+    service = build('drive', 'v3', credentials=creds)
+
+    request = service.files().get_media(fileId=HERO_MASTER_CSV_ID)
+    fh = io.BytesIO()
+    downloader = MediaIoBaseDownload(fh, request)
+    done = False
+    while done is False:
+        status, done = downloader.next_chunk()
+    
+    fh.seek(0)
+    df = pd.read_csv(fh)
+    st.write("-> Hero master loaded successfully!")
+    return df
 
 def load_calendar_csv(directory_path: Path):
     """
-    Attempts to load a 'streamlit' version of the calendar CSV first,
-    and falls back to the original version if not found.
-    Returns the loaded DataFrame and the path of the file.
+    指定されたディレクトリからイベントカレンダーCSVを読み込む（フォールバック機能付き）。
     """
     try:
-        # まずstreamlit版を探す
         csv_path = next(directory_path.glob("calendar-export-streamlit-*.csv"))
         return pd.read_csv(csv_path), csv_path
     except StopIteration:
-        # なければオリジナル版を探す
         try:
             csv_path = next(directory_path.glob("calendar-export-*.csv"))
             return pd.read_csv(csv_path), csv_path
@@ -31,38 +54,26 @@ def load_calendar_csv(directory_path: Path):
 @st.cache_data
 def load_all_data(latest_folder, diff_folder):
     """
-    Handles all data loading from local files and Google Sheets.
-    Returns a dictionary of dataframes.
+    全てのデータを読み込む。ヒーローマスターはGoogle Driveから、イベントはローカルから。
     """
     data = {}
     
-    # --- 1. Load from Google Sheets ---
-    st.write("Connecting to Google Sheets...")
-    scopes = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
-    creds = Credentials.from_service_account_file(GCP_CREDS_PATH, scopes=scopes)
-    client = gspread.authorize(creds)
-    spreadsheet = client.open_by_key(GOOGLE_SHEET_ID)
-    worksheet = spreadsheet.worksheet(GOOGLE_SHEET_NAME)
-    
-    g_sheet_records = worksheet.get_all_values()
-    header = g_sheet_records[0]
-    sheet_data = g_sheet_records[1:]
-    
-    g_sheet_df_full = pd.DataFrame(sheet_data, columns=header)
-    data['g_sheet_df'] = g_sheet_df_full.iloc[:, :3]
+    # --- 1. Google Driveからヒーローマスターを読み込む ---
+    hero_master_df = load_hero_master_from_drive()
+    data['hero_master_df'] = hero_master_df
+
+    # 従来のg_sheet_dfの形式を模倣して作成する
+    # translation_engineがこの形式を期待しているため
+    # CSVの実際のヘッダー名 'heroname_ja', 'id', 'heroname_en' に合わせる
+    data['g_sheet_df'] = hero_master_df[['heroname_ja', 'id', 'heroname_en']].copy()
+    # 互換性のために列名をリネームする
     data['g_sheet_df'].columns = ['hero_ja', 'id', 'hero_en']
 
-    # --- 2. Load from local files ---
+
+    # --- 2. ローカルからイベントCSVを読み込む ---
     st.write(f"Searching in folder: {latest_folder}...")
     latest_dir = EVENT_BASE_DIR / latest_folder
     
-    try:
-        hero_master_path = next(latest_dir.glob("*_private_heroes_*_en.csv"))
-        data['hero_master_df'] = pd.read_csv(hero_master_path)
-    except StopIteration: 
-        raise FileNotFoundError(f"Hero master CSV not found in '{latest_dir}'.")
-    
-    # ヘルパー関数を使ってCSVを読み込み、ファイルパスも受け取る
     main_df, main_path = load_calendar_csv(latest_dir)
     data['main_df'] = main_df
     st.write(f"-> Loaded main data: `{main_path.name}`")
@@ -70,7 +81,6 @@ def load_all_data(latest_folder, diff_folder):
     if diff_folder:
         st.write(f"Searching in diff folder: {diff_folder}...")
         diff_dir = EVENT_BASE_DIR / diff_folder
-        # ヘルパー関数を使って比較用CSVを読み込み、ファイルパスも受け取る
         diff_df, diff_path = load_calendar_csv(diff_dir)
         data['diff_df'] = diff_df
         st.write(f"-> Loaded diff data: `{diff_path.name}`")

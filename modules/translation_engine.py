@@ -1,9 +1,13 @@
+# modules/translation_engine.py
+
 import pandas as pd
 import re
 
 def _generate_final_names(row, en_to_key_map, key_to_ja_map):
-    hero_id = row['ID']
-    eng_name = row['Name']
+    # 'ID' -> 'id'
+    hero_id = row['id']
+    # 'Name' -> 'heroname_en'
+    eng_name = row['heroname_en']
     
     base_eng_name = eng_name
     costume_part = ""
@@ -41,8 +45,10 @@ def create_translation_dicts(hero_master_df, g_sheet_df):
         en_to_key_map=en_text_to_key_map, key_to_ja_map=key_to_ja_text_map
     )
     final_names_df = pd.DataFrame(final_names.tolist(), index=hero_master_df.index)
-    final_df = pd.concat([hero_master_df['ID'], final_names_df], axis=1)
+    # 'ID' -> 'id'
+    final_df = pd.concat([hero_master_df['id'], final_names_df], axis=1)
 
-    english_map = pd.Series(final_df.en.values, index=final_df.ID).to_dict()
-    japanese_map = pd.Series(final_df.ja.values, index=final_df.ID).to_dict()
+    # 'ID' -> 'id'
+    english_map = pd.Series(final_df.en.values, index=final_df.id).to_dict()
+    japanese_map = pd.Series(final_df.ja.values, index=final_df.id).to_dict()
     return english_map, japanese_map
