@@ -87,6 +87,13 @@
 /* --- 差分ハイライト --- */
 .diff-new { background-color: #2a4c3a; }
 .diff-modified { background-color: #2a3a4c; }
+.diff-shifted { background-color: #4a2a4c; } /* New color for shifted events */
 .diff-deleted { background-color: #610025; color: #888888; text-decoration: line-through; opacity: 0.7; }
+.diff-cell-highlight-date { background-color: #3a5a7c; }
 .diff-cell-highlight-hero { background-color: #5a522a; }
 .diff-cell-highlight-hero-nonfeat { background-color: #5a2a2a; }
+
+/* --- サイドバーの自動ナビゲーションを非表示 --- */
+[data-testid="stSidebarNav"] {
+    display: none;
+}

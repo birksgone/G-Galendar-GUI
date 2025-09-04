@@ -97,6 +97,7 @@ else:
     diff_folder = st.sidebar.selectbox("② Previous Data for Diff", diff_options, index=index)
 
 if st.sidebar.button("Load Data", key="load_data_button"):
+    save_to_history(EVENT_HISTORY_FILE, latest_folder)
     config['event_folder'] = latest_folder
     config['diff_folder'] = diff_folder
     save_json_file(CONFIG_FILE, config)
@@ -108,12 +109,13 @@ if latest_folder:
         
         if not comparison_df.empty:
             if st.sidebar.button("✍️ Forum Post", key="forum_post_button"):
-                diff_df = comparison_df[comparison_df['_diff_status'] != 'unchanged'].copy()
+                diff_df = comparison_
+                df[comparison_df['_diff_status'] != 'unchanged'].copy()
                 if not diff_df.empty:
                     st.session_state['diff_data'] = diff_df
                     st.session_state['en_map'] = en_map
                     st.session_state['ja_map'] = ja_map
-                    st.switch_page("pages/1_Forum_Post_Creator.py")
+                    st.switch_page("pages/_1_Forum_Post_Creator.py")
                 else:
                     st.sidebar.warning("No differences found.")
         
