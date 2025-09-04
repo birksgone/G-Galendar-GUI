@@ -7,6 +7,11 @@ import json
 from datetime import datetime, date
 import subprocess
 import sys
+import io
+import os
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseDownload
 
 from modules.data_loader import load_all_data
 from modules.translation_engine import create_translation_dicts
@@ -54,7 +59,8 @@ def load_history(filepath):
 def save_to_history(filepath, new_entry):
     history = load_history(filepath)
     if new_entry in history: history.remove(new_entry)
-    if new_entry: history.insert(0, new_entry)
+    if new_entry:
+        history.insert(0, new_entry)
     with open(filepath, "w", encoding="utf-8") as f: f.write("\n".join(history))
 
 @st.cache_data
@@ -77,9 +83,42 @@ def load_and_process_data(latest_folder, diff_folder):
     
     return comparison_df, en_map, ja_map
 
+def debug_google_drive_data():
+    st.subheader("Debug: Google Drive Data")
+    with st.expander("Click to load and view data from Google Drive"):
+        try:
+            SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
+            FILE_ID = "1rpfF9gNclicG0wwtY_EMKKdlqsRBSKjB"
+            SERVICE_ACCOUNT_FILE = "client_secret.json"
+
+            creds = service_account.Credentials.from_service_account_file(
+                SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+            
+            service = build("drive", "v3", credentials=creds)
+
+            st.info(f"Downloading file with ID: {FILE_ID}...")
+            request = service.files().get_media(fileId=FILE_ID)
+            fh = io.BytesIO()
+            downloader = MediaIoBaseDownload(fh, request)
+            
+            done = False
+            while not done:
+                status, done = downloader.next_chunk()
+
+            fh.seek(0)
+
+            df = pd.read_csv(fh)
+            st.success("Successfully loaded data from Google Drive.")
+            st.dataframe(df.head(5))
+
+        except Exception as e:
+            st.error("An error occurred while fetching data from Google Drive.")
+            st.exception(e)
+
 st.set_page_config(layout="wide")
 inject_custom_css()
 st.title("Event Calendar Management Dashboard")
+debug_google_drive_data()
 
 initialize_files()
 config = load_json_file(CONFIG_FILE)
@@ -140,7 +179,7 @@ if latest_folder:
         start_dt_aware = pd.to_datetime(start_date_filter).tz_localize(display_df['Start Time'].dt.tz)
         end_dt_aware = (pd.to_datetime(end_date_filter) + pd.Timedelta(days=1, seconds=-1)).tz_localize(display_df['Start Time'].dt.tz)
         
-        filtered_df = display_df[display_df['Start Time'].between(start_dt_aware, end_dt_aware)].copy()
+        filtered_df = display_df[display_df['Start Time'].between(start_dt_aware, end_dt_aware)].copy() 
         
         st.subheader("Filtered Event List")
         
@@ -191,7 +230,7 @@ if latest_folder:
                 st.session_state.selected_cols = [label_to_col_map[label] for label in selected_labels]
 
             selected_user_cols = st.session_state.selected_cols
-            final_df = filtered_df.copy()
+            final_df = filtered_df.copy() 
             
             st.markdown('<div class="table-container">', unsafe_allow_html=True)
             html_table = to_html_table(final_df, header_labels, columns_to_display=selected_user_cols, data_dir=latest_folder)
