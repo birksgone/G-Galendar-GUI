@@ -90,6 +90,7 @@ def debug_google_drive_data():
             SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
             FILE_ID = "1rpfF9gNclicG0wwtY_EMKKdlqsRBSKjB"
             SERVICE_ACCOUNT_FILE = "client_secret.json"
+            LOCAL_FILEPATH = Path("data") / "hero_master.csv"
 
             creds = service_account.Credentials.from_service_account_file(
                 SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -107,8 +108,13 @@ def debug_google_drive_data():
 
             fh.seek(0)
 
-            df = pd.read_csv(fh)
-            st.success("Successfully loaded data from Google Drive.")
+            LOCAL_FILEPATH.parent.mkdir(exist_ok=True)
+            with open(LOCAL_FILEPATH, "wb") as f:
+                f.write(fh.read())
+            st.success(f"Successfully downloaded and saved to {LOCAL_FILEPATH}")
+
+            df = pd.read_csv(LOCAL_FILEPATH)
+            st.success("Successfully loaded data from local file.")
             st.dataframe(df.head(5))
 
         except Exception as e:
