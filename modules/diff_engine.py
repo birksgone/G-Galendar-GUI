@@ -1,6 +1,14 @@
 import pandas as pd
 import numpy as np
 
+def _are_different(val1, val2):
+    """Helper to compare values, treating NaNs as equal."""
+    if pd.isna(val1) and pd.isna(val2):
+        return False
+    if pd.isna(val1) or pd.isna(val2):
+        return True
+    return val1 != val2
+
 def compare_dataframes(current_df, previous_df):
     hero_cols_h = [f'H{i}' for i in range(1, 7)]
     hero_cols_c = [f'C{i}' for i in range(1, 7)]
@@ -40,7 +48,7 @@ def compare_dataframes(current_df, previous_df):
             # This block only runs for rows that matched on diff_id, 
             # meaning they are not date-moved events.
             for col in date_cols:
-                if row[f'{col}_curr'] != row[f'{col}_prev']:
+                if _are_different(row[f'{col}_curr'], row[f'{col}_prev']):
                     status = 'modified'
                     changed_cols.add('dates')
 
@@ -88,7 +96,7 @@ def compare_dataframes(current_df, previous_df):
             
             changed_cols = set()
 
-            if new_event_data['startDate'] != deleted_event_data['startDate'] or new_event_data['endDate'] != deleted_event_data['endDate']:
+            if _are_different(new_event_data['startDate'], deleted_event_data['startDate']) or _are_different(new_event_data['endDate'], deleted_event_data['endDate']):
                 changed_cols.add('dates')
 
             new_h = set(new_event_data[hero_cols_h].dropna())
