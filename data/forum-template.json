@@ -1,0 +1,4 @@
+{
+    "en": "**Event:** {Event Name} ({_diff_status})\n**Duration:** {Start Time} ~ {End Time}\n**Featured Heroes:** {Featured Heroes (EN)}\n**Other Heroes:** {Non-Featured Heroes (EN)}",
+    "ja": "**イベント:** {Event Name} ({_diff_status})\n**期間:** {Start Time} ~ {End Time}\n**注目英雄:** {Featured Heroes (JA)}\n**その他の英雄:** {Non-Featured Heroes (JA)}"
+}

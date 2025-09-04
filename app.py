@@ -109,8 +109,7 @@ if latest_folder:
         
         if not comparison_df.empty:
             if st.sidebar.button("✍️ Forum Post", key="forum_post_button"):
-                diff_df = comparison_
-                df[comparison_df['_diff_status'] != 'unchanged'].copy()
+                diff_df = comparison_df[comparison_df['_diff_status'] != 'unchanged'].copy()
                 if not diff_df.empty:
                     st.session_state['diff_data'] = diff_df
                     st.session_state['en_map'] = en_map
