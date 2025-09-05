@@ -36,10 +36,12 @@ def _get_display_info(row, rules):
         conditions = rule.get('conditions', [])
         if all(_check_condition(row, cond) for cond in conditions):
             display_name = rule.get('output', row.get('type', ''))
+            post_name = rule.get('post_name', display_name)
             icon_filename = rule.get('icon', '')
             icon_url = f"{BASE_ICON_URL}{icon_filename}" if icon_filename else None
-            return pd.Series([display_name, icon_url])
-    return pd.Series([row.get('type', ''), None])
+            return pd.Series([display_name, icon_url, post_name])
+    default_type = row.get('type', '')
+    return pd.Series([default_type, None, default_type])
 
 def _translate_and_format_heroes(df, prefix, lang_map):
     hero_lists = []
@@ -61,10 +63,10 @@ def _translate_and_format_heroes(df, prefix, lang_map):
 def format_dataframe_for_display(df, type_mapping_rules, en_map, ja_map, timezone):
     df_copy = df.copy()
 
-    df_copy[['Display Type', 'Icon']] = df_copy.apply(
+    df_copy[['Display Type', 'Icon', 'Post Name']] = df_copy.apply(
         _get_display_info, args=(type_mapping_rules,), axis=1
     )
-    df_copy['Event Name'] = df_copy['event']
+    df_copy['Event Name'] = df_copy['Post Name']
     
     df_copy['Start Time'] = convert_posix_to_datetime(df_copy['startDate'], timezone)
     df_copy['End Time'] = convert_posix_to_datetime(df_copy['endDate'], timezone)

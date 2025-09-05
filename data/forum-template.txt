@@ -1,0 +1,51 @@
+# English template for new events
+[new_en]
+🆕 **New Event Added:** {Event Name}
+**Duration:** {Start Time} ~ {End Time}
+**Featured:** {Featured Heroes (EN)}
+**Other:** {Non-Featured Heroes (EN)}
+
+# Japanese template for new events
+[new_ja]
+🆕 **新規イベント:** {Event Name}
+**期間:** {Start Time} ～ {End Time}
+**注目英雄:** {Featured Heroes (JA)}
+**その他:** {Non-Featured Heroes (JA)}
+
+# ---
+
+# English template for modified events
+[modified_en]
+📝 **Event Updated:** {Event Name}
+**New Duration:** {Start Time} ~ {End Time}
+**Updated Featured:** {Featured Heroes (EN)}
+**Updated Other:** {Non-Featured Heroes (EN)}
+
+# Japanese template for modified events
+[modified_ja]
+📝 **イベント更新:** {Event Name}
+**新期間:** {Start Time} ～ {End Time}
+**更新された注目英雄:** {Featured Heroes (JA)}
+**その他:** {Non-Featured Heroes (JA)}
+
+# ---
+
+# English template for shifted events (a specific type of modification)
+[shifted_en]
+↔️ **Event Shifted:** {Event Name}
+**New Schedule:** {Start Time} ~ {End Time}
+
+# Japanese template for shifted events
+[shifted_ja]
+↔️ **イベント日程変更:** {Event Name}
+**新日程:** {Start Time} ～ {End Time}
+
+# ---
+
+# English template for deleted events
+[deleted_en]
+❌ **Event Removed:** {Event Name}
+
+# Japanese template for deleted events
+[deleted_ja]
+❌ **イベント削除:** {Event Name}
