@@ -1,51 +1,71 @@
-# English template for new events
+# === Template Rules ===
+#
+# 1. Placeholders: Use curly braces to insert data, e.g., {Event Name}.
+# 2. Escaping: The following characters have special meaning. To display them literally,
+#    you must prefix them with a backslash (\).
+#    - Characters to escape: { } \
+#    - Example: To write "{hello}", use \{hello}. To write "C:\Users", use C:\\Users.
+#
+# === テンプレートのルール ===
+#
+# 1. プレースホルダー: 波括弧 {} を使ってデータを挿入します。例: {Event Name}
+# 2. エスケープ: 以下の文字は特別な意味を持つため、そのまま表示したい場合は
+#    バックスラッシュ(\ )を前につけてください。
+#    - 対象文字: { } \
+#    - 例: 「{hello}」と表示するには「\{hello}」と記述します。「C:\Users」と表示するには「C:\\Users」と記述します。
+#
+# === Available Placeholders / 利用可能なプレースホルダー ===
+#
+# --- General ---
+# {Event Name}, {Display Type}, {Duration}, {_diff_status}
+#
+# --- English Heroes ---
+# {Featured Heroes (EN)}, {Non-Featured Heroes (EN)}
+#
+# --- Japanese Heroes ---
+# {Featured Heroes (JA)}, {Non-Featured Heroes (JA)}
+#
+# --- Date & Time (Formatted Strings) ---
+# {Start Time}, {End Time} -> Full date and time, e.g., "2025-09-05 10:00"
+# {start_date_iso}, {end_date_iso} -> Date only, e.g., "2025-09-05"
+# {start_time_iso}, {end_time_iso} -> Time only, e.g., "10:00:00"
+# {start_date_md}, {end_date_md} -> Short date, e.g., "9/5"
+#
+# =================================================================
+
 [new_en]
-🆕 **New Event Added:** {Event Name}
-**Duration:** {Start Time} ~ {End Time}
-**Featured:** {Featured Heroes (EN)}
-**Other:** {Non-Featured Heroes (EN)}
+- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {Event Name} added — {Featured Heroes (EN)}
 
-# Japanese template for new events
 [new_ja]
-🆕 **新規イベント:** {Event Name}
-**期間:** {Start Time} ～ {End Time}
-**注目英雄:** {Featured Heroes (JA)}
-**その他:** {Non-Featured Heroes (JA)}
+{start_date_md} {Event Name}追加：{Featured Heroes (JA)}
 
-# ---
+- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {Event Name} featured heroes updated — {Featured Heroes (EN)}
 
-# English template for modified events
+
+
+
 [modified_en]
-📝 **Event Updated:** {Event Name}
-**New Duration:** {Start Time} ~ {End Time}
-**Updated Featured:** {Featured Heroes (EN)}
-**Updated Other:** {Non-Featured Heroes (EN)}
+- [date=please time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {Event Name} featured hero updated — {Featured Heroes (EN)}
 
-# Japanese template for modified events
 [modified_ja]
-📝 **イベント更新:** {Event Name}
-**新期間:** {Start Time} ～ {End Time}
-**更新された注目英雄:** {Featured Heroes (JA)}
-**その他:** {Non-Featured Heroes (JA)}
+{start_date_md} {Event Name} 注目英雄変更：{Featured Heroes (JA)}
 
-# ---
 
-# English template for shifted events (a specific type of modification)
+
+
+
 [shifted_en]
-↔️ **Event Shifted:** {Event Name}
-**New Schedule:** {Start Time} ~ {End Time}
+- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {Event Name} rescheduled from {original_start_date_iso_en} — {Featured Heroes (EN)}
 
-# Japanese template for shifted events
 [shifted_ja]
-↔️ **イベント日程変更:** {Event Name}
-**新日程:** {Start Time} ～ {End Time}
+{start_date_md} {Event Name} {original_start_date_iso_md}からスケジュール変更：{Featured Heroes (JA)}
 
-# ---
 
-# English template for deleted events
+
+
+
 [deleted_en]
-❌ **Event Removed:** {Event Name}
+- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {Event Name} canceled — {Featured Heroes (EN)}
 
-# Japanese template for deleted events
 [deleted_ja]
-❌ **イベント削除:** {Event Name}
+{start_date_md} {Event Name} キャンセル：{Featured Heroes (JA)}

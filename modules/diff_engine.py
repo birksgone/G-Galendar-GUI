@@ -14,6 +14,9 @@ def compare_dataframes(current_df, previous_df):
     hero_cols_c = [f'C{i}' for i in range(1, 7)]
     date_cols = ['startDate', 'endDate']
 
+    # Initialize the new column with a default value
+    current_df['original_startDate'] = np.nan
+
     # Stage 1: Initial diff on diff_id
     merged_df = pd.merge(
         current_df.add_suffix('_curr'),
@@ -111,6 +114,7 @@ def compare_dataframes(current_df, previous_df):
             
             if changed_cols:
                 result_df.loc[new_idx, '_diff_status'] = 'shifted'
+                result_df.loc[new_idx, 'original_startDate'] = deleted_event_data['startDate']
                 result_df.at[new_idx, '_changed_columns'] = list(changed_cols)
                 matched_deleted_indices.append(del_idx)
         

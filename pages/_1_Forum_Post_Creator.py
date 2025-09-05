@@ -25,6 +25,38 @@ def inject_custom_css():
         with open(css_file, "r", encoding="utf-8") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+# --- Custom Template Processor ---
+def process_custom_template(template_str, data_dict):
+    output = ""
+    i = 0
+    while i < len(template_str):
+        char = template_str[i]
+        if char == '\\':  # Escape character
+            if i + 1 < len(template_str):
+                output += template_str[i+1]
+                i += 2
+            else:  # Dangling escape char
+                output += char
+                i += 1
+        elif char == '{':
+            end_brace = template_str.find('}', i)
+            if end_brace != -1:
+                key = template_str[i+1:end_brace]
+                value = data_dict.get(key)
+                if value is not None:
+                    output += str(value) if pd.notna(value) else ""
+                else:
+                    # If key not found, treat it as literal text
+                    output += f"{{{key}}}"
+                i = end_brace + 1
+            else:  # Unmatched opening brace
+                output += char
+                i += 1
+        else:
+            output += char
+            i += 1
+    return output
+
 st.set_page_config(layout="wide", page_title="Forum Post Creator")
 inject_custom_css()
 
@@ -43,8 +75,8 @@ def load_template():
     with open(template_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # More robust regex to find [key] sections
-    pattern = re.compile(r'\[(.*?)\]\s*([\s\S]*?)(?=\s*\[|$)')
+    # Corrected regex to only split on [key] that starts on a new line.
+    pattern = re.compile(r'\[(.*?)\]\s*([\s\S]*?)(?=\n\s*\[|\Z)')
     matches = pattern.findall(content)
     
     for key, value in matches:
@@ -165,6 +197,8 @@ st.subheader("Generated Post Text")
 if filtered_display_df.empty:
     st.info("No events match the selected date range.")
 else:
+    all_en_texts = []
+    all_ja_texts = []
     # Iterate through the filtered dataframe which contains ALL columns needed for the template
     for index, row in filtered_display_df.iterrows():
         st.markdown(f"--- Event: **{row.get('Event Name', '')}** (`{row.get('_diff_status', '')}`) ---")
@@ -178,26 +212,28 @@ else:
 
         # Prepare data for template
         template_data = row.to_dict()
-        # Format datetime objects into strings for the template
-        template_data['Start Time'] = row['Start Time'].strftime(dt_format) if pd.notna(row['Start Time']) else ''
-        template_data['End Time'] = row['End Time'].strftime(dt_format) if pd.notna(row['End Time']) else ''
-        # Ensure list-based hero columns are converted to strings
-        template_data['Featured Heroes (EN)'] = ", ".join(template_data.get('Featured Heroes (EN)', []))
-        template_data['Non-Featured Heroes (EN)'] = ", ".join(template_data.get('Non-Featured Heroes (EN)', []))
-        template_data['Featured Heroes (JA)'] = ", ".join(template_data.get('Featured Heroes (JA)', []))
-        template_data['Non-Featured Heroes (JA)'] = ", ".join(template_data.get('Non-Featured Heroes (JA)', []))
+        
+        # Generate text using the new robust parser
+        en_text = process_custom_template(en_template_str, template_data)
+        ja_text = process_custom_template(ja_template_str, template_data)
 
-        # Generate text
-        try:
-            en_text = en_template_str.format(**template_data)
-            ja_text = ja_template_str.format(**template_data)
-        except KeyError as e:
-            st.error(f"Template error: Placeholder {e} not found in data for event {row.get('Event Name', '')}.")
-            en_text = ""
-            ja_text = ""
+        all_en_texts.append(en_text)
+        all_ja_texts.append(ja_text)
 
         col1, col2 = st.columns(2)
         with col1:
             st.text_area("English Post", value=en_text, height=150, key=f"en_{index}")
         with col2:
             st.text_area("Japanese Post", value=ja_text, height=150, key=f"ja_{index}")
+
+    # --- Summary Section ---
+    st.subheader("📝 Summary for Copy & Paste")
+
+    summary_en = "\r\n".join(all_en_texts)
+    summary_ja = "\r\n".join(all_ja_texts)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.text_area("English Summary", value=summary_en, height=300, key="summary_en")
+    with col2:
+        st.text_area("Japanese Summary", value=summary_ja, height=300, key="summary_ja")

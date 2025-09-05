@@ -1,0 +1,11 @@
+debug text:
+
+{"new_en":"-","date={start_date_iso} time={start_time_iso} format=\"MMM D\" timezone=\"UTC\" timezones=\"Japan|America/Los_Angeles|Europe/Paris\"":": {Event Name} added. — {Featured Heroes (EN)}\n\n# Japanese template for new events","new_ja":"{start_date_md} {Event Name}注目英雄変更：{Featured Heroes (JA)}\n\n# ---\n\n# English template for modified events","modified_en":"📝 **Event Updated:** {Event Name}\n**New Duration:** {Start Time} ~ {End Time}\n**Updated Featured:** {Featured Heroes (EN)}\n**Updated Other:** {Non-Featured Heroes (EN)}\n\n# Japanese template for modified events","modified_ja":"📝 **イベント更新:** {Event Name}\n**新期間:** {Start Time} ～ {End Time}\n**更新された注目英雄:** {Featured Heroes (JA)}\n**その他:** {Non-Featured Heroes (JA)}\n\n# ---\n\n# English template for shifted events (a specific type of modification)","shifted_en":"↔️ **Event Shifted:** {Event Name}\n**New Schedule:** {Start Time} ~ {End Time}\n\n# Japanese template for shifted events","shifted_ja":"↔️ **イベント日程変更:** {Event Name}\n**新日程:** {Start Time} ～ {End Time}\n\n# ---\n\n# English template for deleted events","deleted_en":"❌ **Event Removed:** {Event Name}\n\n# Japanese template for deleted events","deleted_ja":"❌ **イベント削除:** {Event Name}"}
+
+First firled  is 'new' and it only displayed "-"
+Second field is 'modified' and display: 📝 **Event Updated:** CoE🔴
+**New Duration:** 2025-09-04 07:00:00+00:00 ~ 2025-09-08 07:00:00+00:00
+**Updated Featured:** Doxan C 🆕, Ignazio C
+**Updated Other:** 
+
+# Japanese template for modified events

@@ -43,7 +43,7 @@ def _get_display_info(row, rules):
     default_type = row.get('type', '')
     return pd.Series([default_type, None, default_type])
 
-def _translate_and_format_heroes(df, prefix, lang_map):
+def _translate_and_format_heroes(df, prefix, lang_map, separator):
     hero_lists = []
     num_cols = 6
     for _, row in df.iterrows():
@@ -57,7 +57,7 @@ def _translate_and_format_heroes(df, prefix, lang_map):
                 if new_flag_col in row and row[new_flag_col] == True:
                     hero_name += " 🆕"
                 heroes.append(hero_name)
-        hero_lists.append(heroes if heroes else [])
+        hero_lists.append(separator.join(heroes) if heroes else "")
     return hero_lists
 
 def format_dataframe_for_display(df, type_mapping_rules, en_map, ja_map, timezone):
@@ -70,12 +70,38 @@ def format_dataframe_for_display(df, type_mapping_rules, en_map, ja_map, timezon
     
     df_copy['Start Time'] = convert_posix_to_datetime(df_copy['startDate'], timezone)
     df_copy['End Time'] = convert_posix_to_datetime(df_copy['endDate'], timezone)
+
+    # Add pre-formatted ISO date and time columns for templating
+    df_copy['start_date_iso'] = df_copy['Start Time'].dt.strftime('%Y-%m-%d')
+    df_copy['start_time_iso'] = df_copy['Start Time'].dt.strftime('%H:%M:%S')
+    df_copy['end_date_iso'] = df_copy['End Time'].dt.strftime('%Y-%m-%d')
+    df_copy['end_time_iso'] = df_copy['End Time'].dt.strftime('%H:%M:%S')
+    df_copy['start_date_md'] = df_copy['Start Time'].apply(lambda x: f"{x.month}/{x.day}")
+    df_copy['end_date_md'] = df_copy['End Time'].apply(lambda x: f"{x.month}/{x.day}")
+
+    # Handle original start date for shifted events
+    if 'original_startDate' in df_copy.columns:
+        original_start_time = convert_posix_to_datetime(df_copy['original_startDate'], timezone)
+        
+        def format_en_date(dt):
+            if pd.isna(dt):
+                return ""
+            return dt.strftime('%b ') + str(dt.day)
+
+        df_copy['original_start_date_iso'] = original_start_time.dt.strftime('%Y-%m-%d').replace('NaT', '')
+        df_copy['original_start_date_iso_md'] = original_start_time.apply(lambda x: f"{x.month}/{x.day}" if pd.notna(x) else "")
+        df_copy['original_start_date_iso_en'] = original_start_time.apply(format_en_date)
+    else:
+        df_copy['original_start_date_iso'] = ""
+        df_copy['original_start_date_iso_md'] = ""
+        df_copy['original_start_date_iso_en'] = ""
+
     df_copy['Duration'] = calculate_duration(df_copy['Start Time'], df_copy['End Time'])
 
-    df_copy['Featured Heroes (EN)'] = _translate_and_format_heroes(df_copy, 'H', en_map)
-    df_copy['Non-Featured Heroes (EN)'] = _translate_and_format_heroes(df_copy, 'C', en_map)
-    df_copy['Featured Heroes (JA)'] = _translate_and_format_heroes(df_copy, 'H', ja_map)
-    df_copy['Non-Featured Heroes (JA)'] = _translate_and_format_heroes(df_copy, 'C', ja_map)
+    df_copy['Featured Heroes (EN)'] = _translate_and_format_heroes(df_copy, 'H', en_map, ", ")
+    df_copy['Non-Featured Heroes (EN)'] = _translate_and_format_heroes(df_copy, 'C', en_map, ", ")
+    df_copy['Featured Heroes (JA)'] = _translate_and_format_heroes(df_copy, 'H', ja_map, "、")
+    df_copy['Non-Featured Heroes (JA)'] = _translate_and_format_heroes(df_copy, 'C', ja_map, "、")
 
     return df_copy
 
