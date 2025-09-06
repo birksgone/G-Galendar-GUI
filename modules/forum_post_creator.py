@@ -253,6 +253,16 @@ def render_forum_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map: d
             ja_template_data['Display Type'] = ja_template_data['event_title_ja']
             ja_text = process_custom_template(ja_template_str, ja_template_data)
 
+        # Non-Featured Heroesがある場合に追加テキストを付加
+        non_featured_en = row.get('Non-Featured Heroes (EN) Template', '')
+        non_featured_ja = row.get('Non-Featured Heroes (JA) Template', '')
+        
+        if non_featured_en and pd.notna(non_featured_en) and non_featured_en.strip():
+            en_text += f" + Non featured heroes {non_featured_en}"
+        
+        if non_featured_ja and pd.notna(non_featured_ja) and non_featured_ja.strip():
+            ja_text += f" + 非注目 {non_featured_ja}"
+
         all_en_texts.append(en_text)
         all_ja_texts.append(ja_text)
 

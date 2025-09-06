@@ -20,7 +20,7 @@
           "fields": [
             {
               "name": "**注目英雄**",
-              "value": "\n明日からなので気が早いですが、細かくと計算や画立てる方のために事前告知\n\n- <:emblemfire:989041476833017886> [{featured_hero_1_ja}](https://bbcamp.info/herodb/stravia) :new:\n- <:emblemdark:989041586996391946> [{featured_hero_2_ja}](https://bbcamp.info/herodb/ascian) :new:\n※この2体、数値などにやや自信なしですのでご注意を\n※★5はこの2年でリリースされた英雄：478体\n"
+              "value": "\n明日からなので気が早いですが、細かくと計算や画立てる方のために事前告知\n\n- <:emblemfire:989041476833017886> [{featured_hero_1_ja}](https://bbcamp.info/herodb/stravia)\n- <:emblemdark:989041586996391946> [{featured_hero_2_ja}](https://bbcamp.info/herodb/ascian)\n※この2体、数値などにやや自信なしですのでご注意を\n※★5はこの2年でリリースされた英雄：478体\n"
             },
             {
               "name": "__**サモンコスト**__",
@@ -92,6 +92,57 @@
       "week_number": "週番号",
       "start_date_md": "開始日（月/日）",
       "banner_url": "バナー画像URL"
+    }
+  },
+  {
+    "name": "仮装舞踏会テンプレート",
+    "description": "仮装舞踏会用のDiscord投稿テンプレート（非注目ヒーロー対応）",
+    "template": {
+      "content": "<@&988300145064046702>🎭{event_title_ja}（新規コスx5）",
+      "embeds": [
+        {
+          "title": "{event_title_ja}",
+          "description": "{start_date_full} 午後4時～ {duration_days}日間",
+          "url": "{event_url}",
+          "color": 13632027,
+          "footer": {
+            "text": "BirksG",
+            "icon_url": "https://media.discordapp.net/attachments/985400637795762236/1210787481901862962/birksg.png?ex=667f7cb7&is=667e2b37&hm=0683d240c4045a536b898dce5be4f1216c6f9dd4eede78144038dd378d402ab3&format=webp&quality=lossless&width=681&height=681&"
+          },
+          "image": {
+            "url": "{banner_url}"
+          },
+          "fields": [
+            {
+              "name": "**イベント概要**",
+              "value": "アザールスタート：パターン「**1**」"
+            },
+            {
+              "name": "**英雄サモン**",
+              "value": "**注目英雄**\n- <:emblemholy:989041571167101022> [{featured_hero_1_ja}](https://bbcamp.info/herodb/justice5)\n- <:emblemfire:989041476833017886> [{featured_hero_2_ja}](https://bbcamp.info/herodb/elena5)\n\n{non_featured_section}"
+            },
+            {
+              "name": "**知識ベース**",
+              "value": "<:kblogo:990882922192072724>:link:[イベント：仮装舞踏会](https://bbcamp.info/wiki/quest-costume/)\n\n<:imageonly:991244254892544140>早見表 [パターン1](https://bbcamp.info/quick/costume-quest-p1/)\n<:imageonly:991244254892544140>早見表 [パターン2](https://bbcamp.info/quick/costume-quest-p2/)\n<:imageonly:991244254892544140>早見表 [パターン3](https://bbcamp.info/quick/costume-quest-p3/)\n_ _"
+            }
+          ]
+        }
+      ],
+      "attachments": []
+    },
+    "variables": {
+      "event_title_ja": "イベント名（日本語）",
+      "start_date_full": "開始日（YYYY/M/D (曜日)）",
+      "duration_days": "開催日数",
+      "event_url": "イベントURL",
+      "banner_url": "バナー画像URL",
+      "featured_hero_1_ja": "注目英雄1（日本語）",
+      "featured_hero_2_ja": "注目英雄2（日本語）",
+      "non_featured_hero_1_ja": "非注目英雄1（日本語）",
+      "non_featured_hero_2_ja": "非注目英雄2（日本語）",
+      "non_featured_hero_3_ja": "非注目英雄3（日本語）",
+      "non_featured_hero_4_ja": "非注目英雄4（日本語）",
+      "has_non_featured_heroes": "非注目英雄の有無（true/false）"
     }
   }
 ]

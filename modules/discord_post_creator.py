@@ -123,6 +123,12 @@ def render_discord_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map:
 
     # Full dataframe with all columns for templating
     display_df_all_cols = format_dataframe_for_display(diff_df_raw, rules, en_map, ja_map, timezone=timezone)
+    
+    # Add template-friendly hero columns (without HTML line breaks)
+    display_df_all_cols['Featured Heroes (EN) Template'] = display_df_all_cols['Featured Heroes (EN)'].str.replace('<br>', ', ')
+    display_df_all_cols['Non-Featured Heroes (EN) Template'] = display_df_all_cols['Non-Featured Heroes (EN)'].str.replace('<br>', ', ')
+    display_df_all_cols['Featured Heroes (JA) Template'] = display_df_all_cols['Featured Heroes (JA)'].str.replace('<br>', '、')
+    display_df_all_cols['Non-Featured Heroes (JA) Template'] = display_df_all_cols['Non-Featured Heroes (JA)'].str.replace('<br>', '、')
 
     # Date filter
     st.subheader("Filter by Date Range")
@@ -265,6 +271,37 @@ def render_discord_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map:
         heroes_ja = [h.strip() for h in clean_heroes_ja.split('、') if h.strip()]
         for i, hero in enumerate(heroes_ja[:2], 1):
             event_data[f'featured_hero_{i}_ja'] = hero
+
+    # Extract individual non-featured heroes in Japanese for Discord format
+    if 'Non-Featured Heroes (JA) Template' in event_data and isinstance(event_data['Non-Featured Heroes (JA) Template'], str):
+        non_featured_heroes_ja = event_data['Non-Featured Heroes (JA) Template']
+        if non_featured_heroes_ja and pd.notna(non_featured_heroes_ja) and non_featured_heroes_ja.strip():
+            # Split non-featured heroes and add to event_data
+            non_featured_list = [h.strip() for h in non_featured_heroes_ja.split('、') if h.strip()]
+            for i, hero in enumerate(non_featured_list[:6], 1):  # Max 6 heroes
+                event_data[f'non_featured_hero_{i}_ja'] = hero
+            event_data['has_non_featured_heroes'] = True
+            
+            # Generate non-featured section for Discord template
+            non_featured_section = "**非注目追加**\n"
+            for i, hero in enumerate(non_featured_list[:4], 1):  # Max 4 heroes for display
+                # Assign appropriate emoji based on hero position
+                emoji = "<:emblemice:989041535691673624>"
+                if i == 2:
+                    emoji = "<:emblemholy:989041571167101022>"
+                elif i == 3:
+                    emoji = "<:emblemfire:989041476833017886>"
+                elif i == 4:
+                    emoji = "<:emblemice:989041535691673624>"
+                
+                non_featured_section += f"- {emoji} [{hero}](https://bbcamp.info/herodb/hero{i})\n"
+            event_data['non_featured_section'] = non_featured_section
+        else:
+            event_data['has_non_featured_heroes'] = False
+            event_data['non_featured_section'] = ""
+    else:
+        event_data['has_non_featured_heroes'] = False
+        event_data['non_featured_section'] = ""
     
     # Add weekday information if Start Time is available
     if 'Start Time' in event_data and pd.notna(event_data['Start Time']):
@@ -404,6 +441,73 @@ def render_discord_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map:
             height=300, 
             key="discord_json_output",
             help="Copy the JSON using the button in the top-right corner of this text area"
+        )
+
+        # Hero list for easy copying to Discohook
+        st.subheader("📋 Hero List for Discohook Copy")
+        
+        # Generate hero list text in Discohook editor format
+        hero_list_text = ""
+        
+        # Featured heroes with emojis and links
+        if 'featured_hero_1_ja' in event_data and event_data['featured_hero_1_ja']:
+            hero_list_text += "**注目英雄**\n"
+            if 'featured_hero_1_ja' in event_data:
+                # First featured hero gets holy emblem (🆕 is already added by display_formatter)
+                hero_list_text += f"- <:emblemholy:989041571167101022> [{event_data['featured_hero_1_ja']}](https://bbcamp.info/herodb/justice5)\n"
+            if 'featured_hero_2_ja' in event_data:
+                # Second featured hero gets fire emblem
+                hero_list_text += f"- <:emblemfire:989041476833017886> [{event_data['featured_hero_2_ja']}](https://bbcamp.info/herodb/elena5)\n"
+            hero_list_text += "\n"
+        
+        # Non-featured heroes with emojis and links (🆕 is already added by display_formatter)
+        if event_data.get('has_non_featured_heroes', False):
+            hero_list_text += "**非注目追加**\n"
+            emojis = [
+                "<:emblemice:989041535691673624>",
+                "<:emblemholy:989041571167101022>", 
+                "<:emblemfire:989041476833017886>",
+                "<:emblemice:989041535691673624>"
+            ]
+            
+            for i in range(1, 5):  # Max 4 heroes for display
+                hero_key = f'non_featured_hero_{i}_ja'
+                if hero_key in event_data and event_data[hero_key]:
+                    emoji = emojis[i-1] if i-1 < len(emojis) else "<:emblemice:989041535691673624>"
+                    hero_list_text += f"- {emoji} [{event_data[hero_key]}](https://bbcamp.info/herodb/hero{i})\n"
+        
+        st.text_area(
+            "Hero List (Copy to Discohook Editor)",
+            value=hero_list_text,
+            height=200,
+            key="hero_list_copy",
+            help="このテキストをDiscohookエディタの該当箇所にコピーして使用できます（🆕絵文字は既にヒーロー名に含まれています）"
+        )
+        
+        # Also show simple hero names for reference
+        st.subheader("📋 Simple Hero Names (参考)")
+        simple_hero_text = ""
+        if 'featured_hero_1_ja' in event_data:
+            simple_hero_text += "注目英雄:\n"
+            if 'featured_hero_1_ja' in event_data:
+                simple_hero_text += f"- {event_data['featured_hero_1_ja']}\n"
+            if 'featured_hero_2_ja' in event_data:
+                simple_hero_text += f"- {event_data['featured_hero_2_ja']}\n"
+            simple_hero_text += "\n"
+        
+        if event_data.get('has_non_featured_heroes', False):
+            simple_hero_text += "非注目追加:\n"
+            for i in range(1, 7):
+                hero_key = f'non_featured_hero_{i}_ja'
+                if hero_key in event_data and event_data[hero_key]:
+                    simple_hero_text += f"- {event_data[hero_key]}\n"
+        
+        st.text_area(
+            "Simple Hero Names",
+            value=simple_hero_text,
+            height=150,
+            key="simple_hero_list",
+            help="シンプルなヒーロー名リスト（参考用）"
         )
             
     except Exception as e:
