@@ -7,7 +7,7 @@ This document outlines the architecture and data flow of the G-Calendar-GUI appl
 The application provides a web-based interface to view and compare event calendar data. It highlights differences between two data versions and provides flexible display options, including translation of hero names between English and Japanese.
 
 ## 2. Data Flow
-
+/
 The application uses two main sources of data:
 
 ### a. Local Event Data
