@@ -1,0 +1,31 @@
+        # Switch to forum-post mode when selected
+        if view_mode == "Show changes only":
+            try:
+                diff_df = comparison_df[comparison_df['_diff_status'] != 'unchanged'].copy()
+                render_forum_post_creator(
+                    diff_df,
+                    en_map,
+                    ja_map,
+                    timezone=config.get('timezone', 'UTC')
+                )
+            except Exception as e:
+                st.error("Failed to render Forum Post Creator.")
+                st.exception(e)
+        else:
+        # Switch to forum-post mode when selected
+        if view_mode == "Show changes only":
+            try:
+                diff_df = comparison_df[comparison_df["_diff_status"] != "unchanged"].copy()
+                render_forum_post_creator(
+                    diff_df,
+                    en_map,
+                    ja_map,
+                    timezone=config.get("timezone", "UTC")
+                )
+            except Exception as e:
+                st.error("Failed to render Forum Post Creator.")
+                st.exception(e)
+            st.stop()
+            st.subheader("Filtered Event List")
+
+
