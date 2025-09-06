@@ -1,0 +1,115 @@
+🔍 Debug: Raw Event Data (Before Template Processing)
+event: lottery_wilderness_2025_9_26 (type: str)
+startDate: 812358000.0 (type: float)
+endDate: 812703600.0 (type: float)
+adSummonEnabled: False (type: bool)
+type: WildernessSummon (type: str)
+latestIncludedHeroOfTheMonthDate: nan (type: float)
+advertisedHero: wild_cat_lennart (type: str)
+questline: nan (type: float)
+C1: nan (type: float)
+C2: nan (type: float)
+C3: nan (type: float)
+C4: nan (type: float)
+C5: nan (type: float)
+C6: nan (type: float)
+H1: wild_cat_lennart (type: str)
+H2: wild_cat_leonie (type: str)
+H3: wild_cat_rajesh (type: str)
+H4: elemental_gastille (type: str)
+H5: nan (type: float)
+H6: nan (type: float)
+unique_id: unique_104 (type: str)
+unique_id.1: unique_104 (type: str)
+diff_id: lottery_wilderness_2025_9_26_812358000 (type: str)
+H1_new: nan (type: float)
+H2_new: nan (type: float)
+H3_new: nan (type: float)
+H4_new: nan (type: float)
+H5_new: nan (type: float)
+H6_new: nan (type: float)
+C1_new: nan (type: float)
+C2_new: nan (type: float)
+C3_new: nan (type: float)
+C4_new: nan (type: float)
+C5_new: nan (type: float)
+C6_new: nan (type: float)
+original_startDate: 812185200.0 (type: float)
+_diff_status: shifted (type: str)
+_changed_columns: ['dates'] (type: list)
+Display Type: Wilderness (type: str)
+Icon: https://bbcamp.info/wp-content/uploads/camp-img/calendar_type_icon/wilderness_coin.png (type: str)
+Post Name: Wilderness (type: str)
+Event Name: Wilderness (type: str)
+Start Time: 2025-09-28 07:00:00+00:00 (type: Timestamp)
+End Time: 2025-10-02 07:00:00+00:00 (type: Timestamp)
+start_date_iso: 2025-09-28 (type: str)
+start_time_iso: 07:00:00 (type: str)
+end_date_iso: 2025-10-02 (type: str)
+end_time_iso: 07:00:00 (type: str)
+start_date_md: 9/28 (type: str)
+end_date_md: 10/2 (type: str)
+original_start_date_iso: 2025-09-26 (type: str)
+original_start_date_iso_md: 9/26 (type: str)
+original_start_date_iso_en: Sep 26 (type: str)
+Duration: 4d (type: str)
+Featured Heroes (EN): Lennart<br>Leonie<br>Rajesh<br>Gastille (type: str)
+Non-Featured Heroes (EN): `` (type: str)
+Featured Heroes (JA): レナート<br>レオニー<br>ラジェシュ<br>ガスティール (type: str)
+Non-Featured Heroes (JA): `` (type: str)
+event_name: Wilderness (type: str)
+duration_days: 4 (type: str)
+featured_heroes_en: Lennart<br>Leonie<br>Rajesh<br>Gastille (type: str)
+non_featured_heroes_en: `` (type: str)
+featured_hero_1_en: Lennart (type: str)
+featured_hero_2_en: Leonie (type: str)
+featured_hero_1_ja: レナート (type: str)
+featured_hero_2_ja: レオニー (type: str)
+start_date_weekday: 日 (type: str)
+Template variables that should be available:
+
+event_name: Wilderness (exists: True)
+start_date_md: 9/28 (exists: True)
+start_date_full: None (exists: False)
+start_date_weekday: 日 (exists: True)
+duration_days: 4 (exists: True)
+event_url: None (exists: False)
+banner_url: None (exists: False)
+featured_hero_1_en: Lennart (exists: True)
+featured_hero_2_en: Leonie (exists: True)
+featured_hero_1_ja: レナート (exists: True)
+featured_hero_2_ja: レオニー (exists: True)
+
+🔍 Debug: Template Processing Result
+{"content":"<@&988300145064046702>明日からWilderness","embeds":[{"title":"Wilderness","description":"{start_date_full} 4PM ～ 4日間","url":"{event_url}","color":13632027,"footer":{"text":"BirksG","icon_url":"https://media.discordapp.net/attachments/985400637795762236/1210787481901862962/birksg.png?ex=667a36b7&is=6678e537&hm=346dbc8afcf712fe91e85ab7eb05bed6e76694909684a23c95a0e013032f2b1a&format=webp&quality=lossless&width=681&height=681&"},"image":{"url":"{banner_url}"},"fields":[{"name":"**注目英雄**","value":"\n明日からなので気が早いですが、細かくと計算や画立てる方のために事前告知\n\n- <:emblemfire:989041476833017886> [レナート](https://bbcamp.info/herodb/stravia) :new:\n- <:emblemdark:989041586996391946> [レオニー](https://bbcamp.info/herodb/ascian) :new:\n※この2体、数値などにやや自信なしですのでご注意を\n※★5はこの2年でリリースされた英雄：478体\n"},{"name":"__**サモンコスト**__","value":"<:gems:990510652760154112>のみ\n- 1サモン：450<:gems:990510652760154112> \n- 10サモン：3900<:gems:990510652760154112>\n- 30サモン：10800<:gems:990510652760154112>\n\nきょうyりょくボーナスドローあり、1サモンごとに最低1回の追加ドロー獲得\n詳細は<:kblogo:990882922192072724>知識ベースでどうぞ（英雄リストもあるよ）\n\n[Wilderness]({event_url})\n\n**確率**\n- ★3レア：71.0%\n- ★4エピック：26.5%\n- ★5レジェンド：2.3%\n- ★5レジェンド注目英雄：0.3%\n_ _"}]}],"attachments":[]}
+
+🔍 Debug: Final JSON String
+{
+  "content": "<@&988300145064046702>明日からWilderness",
+  "embeds": [
+    {
+      "title": "Wilderness",
+      "description": "{start_date_full} 4PM ～ 4日間",
+      "url": "{event_url}",
+      "color": 13632027,
+      "footer": {
+        "text": "BirksG",
+        "icon_url": "https://media.discordapp.net/attachments/985400637795762236/1210787481901862962/birksg.png?ex=667a36b7&is=6678e537&hm=346dbc8afcf712fe91e85ab7eb05bed6e76694909684a23c95a0e013032f2b1a&format=webp&quality=lossless&width=681&height=681&"
+      },
+      "image": {
+        "url": "{banner_url}"
+      },
+      "fields": [
+        {
+          "name": "**注目英雄**",
+          "value": "\n明日からなので気が早いですが、細かくと計算や画立てる方のために事前告知\n\n- <:emblemfire:989041476833017886> [レナート](https://bbcamp.info/herodb/stravia) :new:\n- <:emblemdark:989041586996391946> [レオニー](https://bbcamp.info/herodb/ascian) :new:\n※この2体、数値などにやや自信なしですのでご注意を\n※★5はこの2年でリリースされた英雄：478体\n"
+        },
+        {
+          "name": "__**サモンコスト**__",
+          "value": "<:gems:990510652760154112>のみ\n- 1サモン：450<:gems:990510652760154112> \n- 10サモン：3900<:gems:990510652760154112>\n- 30サモン：10800<:gems:990510652760154112>\n\nきょうyりょくボーナスドローあり、1サモンごとに最低1回の追加ドロー獲得\n詳細は<:kblogo:990882922192072724>知識ベースでどうぞ（英雄リストもあるよ）\n\n[Wilderness]({event_url})\n\n**確率**\n- ★3レア：71.0%\n- ★4エピック：26.5%\n- ★5レジェンド：2.3%\n- ★5レジェンド注目英雄：0.3%\n_ _"
+        }
+      ]
+    }
+  ],
+  "attachments": []
+}

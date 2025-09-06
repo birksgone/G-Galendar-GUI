@@ -2,681 +2,1191 @@
   {
     "priority": 10,
     "conditions": [
-      { "column": "type", "operator": "equals", "value": "ShadowSummon" }
+      {
+        "column": "type",
+        "operator": "equals",
+        "value": "ShadowSummon"
+      }
     ],
     "output": "Shadow Summon",
-    "icon": "events_special_shadow.png"
+    "icon": "events_special_shadow.png",
+    "event_title_en": "Shadow Summon",
+    "event_title_ja": "深淵のシャドウ"
   },
   {
     "priority": 20,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": ".*_ascensionitemsummon_.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": ".*_ascensionitemsummon_.*"
+      }
     ],
     "output": "Ascend SM",
-    "icon": "ascension_crystal.png"
+    "icon": "ascension_crystal.png",
+    "event_title_en": "Ascend SM",
+    "event_title_ja": "Ascend SM"
   },
   {
     "priority": 30,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^PvP_\\d.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^PvP_\\d.*"
+      }
     ],
     "output": "Raid Tournament",
-    "icon": "symbol_energy_pvp_event.png"
+    "icon": "symbol_energy_pvp_event.png",
+    "event_title_en": "Raid Tournament",
+    "event_title_ja": "レイドトーナメント"
   },
   {
     "priority": 40,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "'*_limitbreakitemsummon_.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "'*_limitbreakitemsummon_.*"
+      }
     ],
     "output": "Aether SM",
-    "icon": "aether_crystal.png"
+    "icon": "aether_crystal.png",
+    "event_title_en": "Aether SM",
+    "event_title_ja": "Aether SM"
   },
   {
     "priority": 50,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^hero_coach.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^hero_coach.*"
+      }
     ],
     "output": "Hero Coach",
-    "icon": "offericon_herocoach.png"
+    "icon": "offericon_herocoach.png",
+    "event_title_en": "Hero Coach",
+    "event_title_ja": "英雄の訓練係"
   },
   {
     "priority": 60,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^pvpLeague_.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^pvpLeague_.*"
+      }
     ],
     "output": "Hero League",
-    "icon": "passive_league.png"
+    "icon": "passive_league.png",
+    "event_title_en": "Hero League",
+    "event_title_ja": "英雄リーグ"
   },
   {
     "priority": 70,
     "conditions": [
-      { "column": "type", "operator": "contains", "value": "SummonChallenge" }
+      {
+        "column": "type",
+        "operator": "contains",
+        "value": "SummonChallenge"
+      }
     ],
     "output": "Summon Challenge",
-    "icon": "challengeSeason_mission_summon.png"
+    "icon": "challengeSeason_mission_summon.png",
+    "event_title_en": "Gem Summon Challenge",
+    "event_title_ja": "ジェムサモンチャレンジ"
   },
   {
     "priority": 80,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "seasonal_brawl_kalevala_brawl" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "seasonal_brawl_kalevala_brawl"
+      }
     ],
     "output": "Kalevala Brawl P1",
-    "icon": "raid_brawl_glow.png"
+    "icon": "raid_brawl_glow.png",
+    "event_title_en": "Kalevala Brawl P1",
+    "event_title_ja": "Kalevala Brawl P1"
   },
   {
     "priority": 90,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "seasonal_brawl_kalevala_brawl_part_2" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "seasonal_brawl_kalevala_brawl_part_2"
+      }
     ],
     "output": "Kalevala Brawl P2",
-    "icon": "raid_brawl_glow.png"
+    "icon": "raid_brawl_glow.png",
+    "event_title_en": "Kalevala Brawl P2",
+    "event_title_ja": "Kalevala Brawl P2"
   },
   {
     "priority": 100,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "seasonal_brawl_kalevala_brawl_part_3" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "seasonal_brawl_kalevala_brawl_part_3"
+      }
     ],
     "output": "Kalevala Brawl P3",
-    "icon": "raid_brawl_glow.png"
+    "icon": "raid_brawl_glow.png",
+    "event_title_en": "Kalevala Brawl P3",
+    "event_title_ja": "Kalevala Brawl P3"
   },
   {
     "priority": 110,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^dragon_legendary_.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^dragon_legendary_.*"
+      }
     ],
     "output": "Legendary Dragon Quest",
-    "icon": "dragon_legendary_coin.png"
+    "icon": "dragon_legendary_coin.png",
+    "event_title_en": "Legendary Dragon Quest",
+    "event_title_ja": "レジェンドドラゴンのクエスト"
   },
   {
     "priority": 120,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^TreasureQuestXPBlue.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^TreasureQuestXPBlue.*"
+      }
     ],
     "output": "TQ🔵XP",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "Treasure Quest: Ice XP",
+    "event_title_ja": "宝物クエスト：🔵XP"
   },
   {
     "priority": 130,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^TreasureQuestXPGreen.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^TreasureQuestXPGreen.*"
+      }
     ],
     "output": "TQ🟢XP",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "Treasure Quest: Nature XP",
+    "event_title_ja": "宝物クエスト：🟢XP"
   },
   {
     "priority": 140,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^TreasureQuestXPRed.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^TreasureQuestXPRed.*"
+      }
     ],
     "output": "TQ🔴XP",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "Treasure Quest: Fire XP",
+    "event_title_ja": "宝物クエスト：🔴XP"
   },
   {
     "priority": 150,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^TreasureQuestXPYellow.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^TreasureQuestXPYellow.*"
+      }
     ],
     "output": "TQ🟡XP",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "Treasure Quest: Holy XP",
+    "event_title_ja": "宝物クエスト：🟡XP"
   },
   {
     "priority": 160,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^TreasureQuestXPPurple.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^TreasureQuestXPPurple.*"
+      }
     ],
     "output": "TQ🟣XP",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "Treasure Quest: Dark XP",
+    "event_title_ja": "宝物クエスト：🟣XP"
   },
   {
     "priority": 170,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^TreasureQuestLGTroop.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^TreasureQuestLGTroop.*"
+      }
     ],
     "output": "TQ Troops",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "Treasure Quest: Troops",
+    "event_title_ja": "宝物クエスト：兵団"
   },
   {
     "priority": 180,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^TreasureQuestTome.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^TreasureQuestTome.*"
+      }
     ],
     "output": "TQ Tome",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "Treasure Quest: Tome and Utilities",
+    "event_title_ja": "宝物クエスト：書物系"
   },
   {
     "priority": 190,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^TreasureQuestGoblinAstral.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^TreasureQuestGoblinAstral.*"
+      }
     ],
     "output": "TQ Goblin/Astral",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "TQ Goblin/Astral",
+    "event_title_ja": "TQ Goblin/Astral"
   },
   {
     "priority": 200,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^TreasureQuestCovenantSuperElemental.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^TreasureQuestCovenantSuperElemental.*"
+      }
     ],
     "output": "TQ Cov/Super",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "Treasure Quest: Covenant/Super Element",
+    "event_title_ja": "宝物クエスト：盟約/スーパーエレ"
   },
   {
     "priority": 210,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^TreasureQuestTowerAlliance.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^TreasureQuestTowerAlliance.*"
+      }
     ],
     "output": "TQ Alliance",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "Treasure Quest: Tower/Alliance Quest",
+    "event_title_ja": "宝物クエスト：タワー/同盟クエ"
   },
   {
     "priority": 220,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "TreasureQuestAlphaAether" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "TreasureQuestAlphaAether"
+      }
     ],
     "output": "TQ Alpha",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "Treasure Quest: Limitbreak",
+    "event_title_ja": "宝物クエスト：リミットブレーク"
   },
   {
     "priority": 230,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "TreasureQuestAscension" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "TreasureQuestAscension"
+      }
     ],
     "output": "TQ Ascension",
-    "icon": "events_treasure_quest_icon.png"
+    "icon": "events_treasure_quest_icon.png",
+    "event_title_en": "Treasure Quest: Ascension",
+    "event_title_ja": "宝物クエスト：アセンド"
   },
   {
     "priority": 240,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "SecretSummonExperienceMimicRed" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "SecretSummonExperienceMimicRed"
+      }
     ],
     "output": "🔴Exp. Mimic",
-    "icon": "passive_mimic_training_hero_red.png"
+    "icon": "passive_mimic_training_hero_red.png",
+    "event_title_en": "🔴Exp. Mimic",
+    "event_title_ja": "🔴Exp. Mimic"
   },
   {
     "priority": 250,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "SecretSummonExperienceMimicBlue" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "SecretSummonExperienceMimicBlue"
+      }
     ],
     "output": "🔵Exp. Mimic",
-    "icon": "passive_mimic_training_hero_blue.png"
+    "icon": "passive_mimic_training_hero_blue.png",
+    "event_title_en": "🔵Exp. Mimic",
+    "event_title_ja": "🔵Exp. Mimic"
   },
   {
     "priority": 260,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "SecretSummonExperienceMimicGreen" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "SecretSummonExperienceMimicGreen"
+      }
     ],
     "output": "🟢Exp. Mimic",
-    "icon": "passive_mimic_training_hero_green.png"
+    "icon": "passive_mimic_training_hero_green.png",
+    "event_title_en": "🟢Exp. Mimic",
+    "event_title_ja": "🟢Exp. Mimic"
   },
   {
     "priority": 270,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "SecretSummonExperienceMimicYellow" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "SecretSummonExperienceMimicYellow"
+      }
     ],
     "output": "🟡Exp. Mimic",
-    "icon": "passive_mimic_training_hero_yellow.png"
+    "icon": "passive_mimic_training_hero_yellow.png",
+    "event_title_en": "🟡Exp. Mimic",
+    "event_title_ja": "🟡Exp. Mimic"
   },
   {
     "priority": 280,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "SecretSummonExperienceMimicPurple" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "SecretSummonExperienceMimicPurple"
+      }
     ],
     "output": "🟣Exp. Mimic",
-    "icon": "passive_mimic_training_hero_purple.png"
+    "icon": "passive_mimic_training_hero_purple.png",
+    "event_title_en": "🟣Exp. Mimic",
+    "event_title_ja": "🟣Exp. Mimic"
   },
   {
     "priority": 290,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "SecretSummonAscensionMimicRed" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "SecretSummonAscensionMimicRed"
+      }
     ],
     "output": "🔴Asc. Mimic",
-    "icon": "passive_mimic_training_hero_red.png"
+    "icon": "passive_mimic_training_hero_red.png",
+    "event_title_en": "Secret Summon",
+    "event_title_ja": "シークレットサモン"
   },
   {
     "priority": 300,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "SecretSummonAscensionMimicBlue" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "SecretSummonAscensionMimicBlue"
+      }
     ],
     "output": "🔵Asc. Mimic",
-    "icon": "passive_mimic_training_hero_blue.png"
+    "icon": "passive_mimic_training_hero_blue.png",
+    "event_title_en": "Secret Summon",
+    "event_title_ja": "シークレットサモン"
   },
   {
     "priority": 310,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "SecretSummonAscensionMimicGreen" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "SecretSummonAscensionMimicGreen"
+      }
     ],
     "output": "🟢Asc. Mimic",
-    "icon": ""
+    "icon": "",
+    "event_title_en": "Secret Summon",
+    "event_title_ja": "シークレットサモン"
   },
   {
     "priority": 320,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "SecretSummonAscensionMimicYellow" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "SecretSummonAscensionMimicYellow"
+      }
     ],
     "output": "🟡Asc. Mimic",
-    "icon": "passive_mimic_training_hero_yellow.png"
+    "icon": "passive_mimic_training_hero_yellow.png",
+    "event_title_en": "Secret Summon",
+    "event_title_ja": "シークレットサモン"
   },
   {
     "priority": 330,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "SecretSummonAscensionMimicPurple" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "SecretSummonAscensionMimicPurple"
+      }
     ],
     "output": "🟣Asc. Mimic",
-    "icon": "passive_mimic_training_hero_purple.png"
+    "icon": "passive_mimic_training_hero_purple.png",
+    "event_title_en": "Secret Summon",
+    "event_title_ja": "シークレットサモン"
   },
   {
     "priority": 340,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "dragon_cave_" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "dragon_cave_"
+      }
     ],
     "output": "Dragon Cave",
-    "icon": "property_dragon_cave.png"
+    "icon": "property_dragon_cave.png",
+    "event_title_en": "Dragon Cave",
+    "event_title_ja": "Dragon Cave"
   },
   {
     "priority": 350,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "seasonal_beach_party_.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "seasonal_beach_party_.*"
+      }
     ],
     "output": "Beach Party",
-    "icon": "family_beachparty.png"
+    "icon": "family_beachparty.png",
+    "event_title_en": "Beach Party Summon",
+    "event_title_ja": "ビーチパーティー"
   },
   {
     "priority": 360,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "outfitter" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "outfitter"
+      }
     ],
     "output": "Outfitter",
-    "icon": "offericon_visiting_outfitter.png"
+    "icon": "offericon_visiting_outfitter.png",
+    "event_title_en": "Visiting Outfitter",
+    "event_title_ja": "訪問衣装屋"
   },
   {
     "priority": 370,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "lottery_birthday_2025" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "lottery_birthday_2025"
+      }
     ],
     "output": "8th Birthday",
-    "icon": "7thBirthday_Wreath_Summon_Selection.png"
+    "icon": "7thBirthday_Wreath_Summon_Selection.png",
+    "event_title_en": "Birthday Summon",
+    "event_title_ja": "バースデーサモン"
   },
   {
     "priority": 380,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "instantpower" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "instantpower"
+      }
     ],
     "output": "Instant Power",
-    "icon": "ascension_summon_deco.png"
+    "icon": "ascension_summon_deco.png",
+    "event_title_en": "Instant Power Summon",
+    "event_title_ja": "即時パワーサモン"
   },
   {
     "priority": 390,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "raid_brawl" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "raid_brawl"
+      }
     ],
     "output": "Raid Brawl",
-    "icon": "property_raid_brawl.png"
+    "icon": "property_raid_brawl.png",
+    "event_title_en": "Raid Brawl",
+    "event_title_ja": "Raid Brawl"
   },
   {
     "priority": 400,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "ancient_dragon" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "ancient_dragon"
+      }
     ],
     "output": "Ancient Underroot",
-    "icon": "treasure_hoarder_dragon.png"
+    "icon": "treasure_hoarder_dragon.png",
+    "event_title_en": "Ancient Underroot",
+    "event_title_ja": "古の地下茎"
   },
   {
     "priority": 410,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^MonsterIsland.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^MonsterIsland.*"
+      }
     ],
     "output": "Monster Island",
-    "icon": "monster_coin_angular.png"
+    "icon": "monster_coin_angular.png",
+    "event_title_en": "Monster Island Summon",
+    "event_title_ja": "モンスター島"
   },
   {
     "priority": 420,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^SecretHero.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^SecretHero.*"
+      }
     ],
     "output": "Secret Summon",
-    "icon": "secret_question_mark.png"
+    "icon": "secret_question_mark.png",
+    "event_title_en": "Secret Summon",
+    "event_title_ja": "Secret Summon"
   },
   {
     "priority": 430,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "lottery_hotm_event" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "lottery_hotm_event"
+      }
     ],
     "output": "ToL",
-    "icon": "hotm_coin.png"
+    "icon": "hotm_coin.png",
+    "event_title_en": "Tavern of Legends",
+    "event_title_ja": "伝説の酒場"
   },
   {
     "priority": 440,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^HotM_hotm2024.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^HotM_hotm2024.*"
+      }
     ],
     "output": "HotM2024",
-    "icon": "family_hotm2024.png"
+    "icon": "family_hotm2024.png",
+    "event_title_en": "HotM2024",
+    "event_title_ja": "HotM2024"
   },
   {
     "priority": 450,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^HotM_hotm2025.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^HotM_hotm2025.*"
+      }
     ],
     "output": "HotM2025",
-    "icon": "family_hotm2025.png"
+    "icon": "family_hotm2025.png",
+    "event_title_en": "HotM2025",
+    "event_title_ja": "HotM2025"
   },
   {
     "priority": 460,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^mercenary_war.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^mercenary_war.*"
+      }
     ],
     "output": "W3K",
-    "icon": "mercenary_war_coin.png"
+    "icon": "mercenary_war_coin.png",
+    "event_title_en": "War of Three Kingdoms Summon",
+    "event_title_ja": "三国戦争"
   },
   {
     "priority": 470,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "lottery_legendary_troop" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "lottery_legendary_troop"
+      }
     ],
     "output": "★5Troop",
-    "icon": "legendary_troop.png"
+    "icon": "legendary_troop.png",
+    "event_title_en": "Legendary Troop Summon",
+    "event_title_ja": "レジェンド兵団サモン"
   },
   {
     "priority": 480,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "TowerNinja" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "TowerNinja"
+      }
     ],
     "output": "Ninja",
-    "icon": "family_ninja.png"
+    "icon": "family_ninja.png",
+    "event_title_en": "Ninja",
+    "event_title_ja": "Ninja"
   },
   {
     "priority": 490,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "TowerOwl" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "TowerOwl"
+      }
     ],
     "output": "Owl",
-    "icon": "family_owl.png"
+    "icon": "family_owl.png",
+    "event_title_en": "Owl",
+    "event_title_ja": "Owl"
   },
   {
     "priority": 500,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "^AllianceQuestMoth.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "^AllianceQuestMoth.*"
+      }
     ],
     "output": "AQ:NotM",
-    "icon": "family_moth.png"
+    "icon": "family_moth.png",
+    "event_title_en": "AQ: Night of the Moth Summon",
+    "event_title_ja": "同盟クエスト"
   },
   {
     "priority": 510,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "atlantis" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "atlantis"
+      }
     ],
     "output": "S2",
-    "icon": "atlantis_coin.png"
+    "icon": "atlantis_coin.png",
+    "event_title_en": "Atlantis Summon (S2)",
+    "event_title_ja": "アトランティス出現"
   },
   {
     "priority": 520,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "valhalla" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "valhalla"
+      }
     ],
     "output": "S3",
-    "icon": "valhalla_coin.png"
+    "icon": "valhalla_coin.png",
+    "event_title_en": "Valhalla Summon (S3)",
+    "event_title_ja": "ヴァルハラよ永遠に"
   },
   {
     "priority": 530,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "underwild" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "underwild"
+      }
     ],
     "output": "S4",
-    "icon": "underwild_coin.png"
+    "icon": "underwild_coin.png",
+    "event_title_en": "Underwild Summon (S4)",
+    "event_title_ja": "アンダーワイルドの激震"
   },
   {
     "priority": 540,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "season5" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "season5"
+      }
     ],
     "output": "S5",
-    "icon": "dunes_coin.png"
+    "icon": "dunes_coin.png",
+    "event_title_en": "Dune Summon (S5)",
+    "event_title_ja": "裁きの砂丘"
   },
   {
     "priority": 550,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "untold_tales1" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "untold_tales1"
+      }
     ],
     "output": "Untold Tale 1",
-    "icon": ""
+    "icon": "",
+    "event_title_en": "Untold Tale 1 Summon",
+    "event_title_ja": "語られざる物語1"
   },
   {
     "priority": 560,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "untold_tales2" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "untold_tales2"
+      }
     ],
     "output": "Untold Tale 2",
-    "icon": "coin_untold_tales.png"
+    "icon": "coin_untold_tales.png",
+    "event_title_en": "Untold Tale 2 Summon",
+    "event_title_ja": "語られざる物語2"
   },
   {
     "priority": 570,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "lottery_solstice" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "lottery_solstice"
+      }
     ],
     "output": "Solstice",
-    "icon": "summersolstice1_offer_icon.png"
+    "icon": "summersolstice1_offer_icon.png",
+    "event_title_en": "Solstice Summon",
+    "event_title_ja": "夏至の日サモン"
   },
   {
     "priority": 580,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "lottery_harvest" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "lottery_harvest"
+      }
     ],
     "output": "Harvest",
-    "icon": "frame_decoration_harvest_summon_01.png"
+    "icon": "frame_decoration_harvest_summon_01.png",
+    "event_title_en": "Harvest",
+    "event_title_ja": "Harvest"
   },
   {
     "priority": 590,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "costume" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "costume"
+      }
     ],
     "output": "Costume",
-    "icon": "card_costume.png"
+    "icon": "card_costume.png",
+    "event_title_en": "Costume Chamber",
+    "event_title_ja": "仮装舞踏会"
   },
   {
     "priority": 600,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "astral" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "astral"
+      }
     ],
     "output": "Astral",
-    "icon": "astralelves_coin.png"
+    "icon": "astralelves_coin.png",
+    "event_title_en": "Astral Summon",
+    "event_title_ja": "アストラルプレーン"
   },
   {
     "priority": 610,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "super_elemental_purple" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "super_elemental_purple"
+      }
     ],
     "output": "CoE🟣",
-    "icon": "powergem_purple.png"
+    "icon": "powergem_purple.png",
+    "event_title_en": "Contest of Elements (Dark)",
+    "event_title_ja": "🟣属性バトル"
   },
   {
     "priority": 620,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "super_elemental_blue" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "super_elemental_blue"
+      }
     ],
     "output": "CoE🔵",
-    "icon": "powergem_blue.png"
+    "icon": "powergem_blue.png",
+    "event_title_en": "Contest of Elements (Ice)",
+    "event_title_ja": "🔵属性バトル"
   },
   {
     "priority": 630,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "super_elemental_red" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "super_elemental_red"
+      }
     ],
     "output": "CoE🔴",
-    "icon": "powergem_red.png"
+    "icon": "powergem_red.png",
+    "event_title_en": "Contest of Elements (Fire)",
+    "event_title_ja": "🔴属性バトル"
   },
   {
     "priority": 640,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "super_elemental_green" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "super_elemental_green"
+      }
     ],
     "output": "CoE🟢",
-    "icon": "powergem_green.png"
+    "icon": "powergem_green.png",
+    "event_title_en": "Contest of Elements (Nature)",
+    "event_title_ja": "🟢属性バトル"
   },
   {
     "priority": 650,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "super_elemental_yellow" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "super_elemental_yellow"
+      }
     ],
     "output": "CoE🟡",
-    "icon": "powergem_yellow.png"
+    "icon": "powergem_yellow.png",
+    "event_title_en": "Contest of Elements (Holy)",
+    "event_title_ja": "🟡属性バトル"
   },
   {
     "priority": 660,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "pickup_summon" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "pickup_summon"
+      }
     ],
     "output": "PickUp",
-    "icon": "pickup_coin.png"
+    "icon": "pickup_coin.png",
+    "event_title_en": "PickUp Summon",
+    "event_title_ja": "ピックアップサモン"
   },
   {
     "priority": 670,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "FestivalA" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "FestivalA"
+      }
     ],
     "output": "Fes1",
-    "icon": "challenge_coin.png"
+    "icon": "challenge_coin.png",
+    "event_title_en": "Fes1",
+    "event_title_ja": "Fes1"
   },
   {
     "priority": 680,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "FestivalB" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "FestivalB"
+      }
     ],
     "output": "Fes2",
-    "icon": "challenge_coin.png"
+    "icon": "challenge_coin.png",
+    "event_title_en": "Challenge Festival 2 Summon",
+    "event_title_ja": "チャレンジフェスティバル2"
   },
   {
     "priority": 690,
     "conditions": [
-      { "column": "event", "operator": "matches", "value": "lottery_covenant_.*|loterry_covenant_.*" }
+      {
+        "column": "event",
+        "operator": "matches",
+        "value": "lottery_covenant_.*|loterry_covenant_.*"
+      }
     ],
     "output": "Covenant",
-    "icon": "covenant_coin.png"
+    "icon": "covenant_coin.png",
+    "event_title_en": "Covenant Summon",
+    "event_title_ja": "盟約サモン (サモンのみ)"
   },
   {
     "priority": 700,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "CovenantQuest1" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "CovenantQuest1"
+      }
     ],
     "output": "Cov Quest1",
-    "icon": "event_menuicon_covenant_quest.png"
+    "icon": "event_menuicon_covenant_quest.png",
+    "event_title_en": "Covenant Quest (Boss Wulf Variant)",
+    "event_title_ja": "盟約クエスト"
   },
   {
     "priority": 710,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "CovenantQuest2" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "CovenantQuest2"
+      }
     ],
     "output": "Cov Quest2",
-    "icon": ""
+    "icon": "",
+    "event_title_en": "Covenant Quest (QoH Variant)",
+    "event_title_ja": "盟約クエスト"
   },
   {
     "priority": 720,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "_wilderness" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "_wilderness"
+      }
     ],
     "output": "Wilderness",
-    "icon": "wilderness_coin.png"
+    "icon": "wilderness_coin.png",
+    "event_title_en": "Wilderness Summon",
+    "event_title_ja": "荒野のサモン"
   },
   {
     "priority": 730,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "RecurringGargoyles" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "RecurringGargoyles"
+      }
     ],
     "output": "Gargoyle",
-    "icon": "challenge_coin.png"
+    "icon": "challenge_coin.png",
+    "event_title_en": "Gargoyle",
+    "event_title_ja": "Gargoyle"
   },
   {
     "priority": 740,
     "conditions": [
-      { "column": "event", "operator": "equals", "value": "RecurringBeowulf" }
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "RecurringBeowulf"
+      }
     ],
     "output": "Beowulf",
-    "icon": "challenge_coin.png"
+    "icon": "challenge_coin.png",
+    "event_title_en": "Beowulf Summon",
+    "event_title_ja": "ベオウルフの挑戦"
   },
   {
     "priority": 750,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "goblin" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "goblin"
+      }
     ],
     "output": "Goblin",
-    "icon": "goblin_coin.png"
+    "icon": "goblin_coin.png",
+    "event_title_en": "Goblin Village Summon",
+    "event_title_ja": "ゴブリンの村"
   },
   {
     "priority": 760,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "baba_yaga" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "baba_yaga"
+      }
     ],
     "output": "Mythic🟢",
-    "icon": "mythic_titan_baba_yaga.png"
+    "icon": "mythic_titan_baba_yaga.png",
+    "event_title_en": "Mythic Titan (Babayaga)",
+    "event_title_ja": "🟢ミシックタイタン"
   },
   {
     "priority": 770,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "_ifrit" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "_ifrit"
+      }
     ],
     "output": "Mythic🔴",
-    "icon": "mythic_titan_ifrit.png"
+    "icon": "mythic_titan_ifrit.png",
+    "event_title_en": "Mythic Titan (Ifrit)",
+    "event_title_ja": "🔴ミシックタイタン"
   },
   {
     "priority": 780,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "_gilgamesh" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "_gilgamesh"
+      }
     ],
     "output": "Mythic🟡",
-    "icon": "mythic_titan_gilgamesh.png"
+    "icon": "mythic_titan_gilgamesh.png",
+    "event_title_en": "Mythic Titan (Gilgamesh)",
+    "event_title_ja": "🟡ミシックタイタン"
   },
   {
     "priority": 790,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "_hades" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "_hades"
+      }
     ],
     "output": "Mythic🟣",
-    "icon": "mythic_titan_hades.png"
+    "icon": "mythic_titan_hades.png",
+    "event_title_en": "Mythic Titan (Hades)",
+    "event_title_ja": "🟣ミシックタイタン"
   },
   {
     "priority": 800,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "_jormungandr" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "_jormungandr"
+      }
     ],
     "output": "Mythic🔵",
-    "icon": "mythic_titan_jormungandr.png"
+    "icon": "mythic_titan_jormungandr.png",
+    "event_title_en": "Mythic Titan (Jormungandr)",
+    "event_title_ja": "🔵ミシックタイタン"
   },
   {
     "priority": 810,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "path_of_valor" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "path_of_valor"
+      }
     ],
     "output": "PoV",
-    "icon": "challengeSeason_mission_valor.png"
+    "icon": "challengeSeason_mission_valor.png",
+    "event_title_en": "Path of Giants",
+    "event_title_ja": "偉人の試練"
   },
   {
     "priority": 820,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "path_of_giants" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "path_of_giants"
+      }
     ],
     "output": "PoG",
-    "icon": "challengeSeason_header_icon_giants.png"
+    "icon": "challengeSeason_header_icon_giants.png",
+    "event_title_en": "Path of Valor",
+    "event_title_ja": "武勇の試練"
   },
   {
     "priority": 830,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "path_of_dragons" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "path_of_dragons"
+      }
     ],
     "output": "PoD",
-    "icon": "pod_path_of_dragonsr_mark.png"
+    "icon": "pod_path_of_dragonsr_mark.png",
+    "event_title_en": "Path of Dragons",
+    "event_title_ja": "ドラゴンの試練"
   },
   {
     "priority": 840,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "lottery_black" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "lottery_black"
+      }
     ],
     "output": "B.FRIDAY",
-    "icon": "offericon_blackfriday2019.png"
+    "icon": "offericon_blackfriday2019.png",
+    "event_title_en": "B.FRIDAY",
+    "event_title_ja": "B.FRIDAY"
   },
   {
     "priority": 841,
     "conditions": [
-      { "column": "event", "operator": "contains", "value": "soul_exchange_" }
+      {
+        "column": "event",
+        "operator": "contains",
+        "value": "soul_exchange_"
+      }
     ],
     "output": "Soul Exchange",
-    "icon": "soulexchange.png"
+    "icon": "soulexchange.png",
+    "event_title_en": "Soul Exchange",
+    "event_title_ja": "Soul Exchange"
   }
 ]

@@ -1,0 +1,112 @@
+{
+  "content": "Hey, welcome to <:discohook:736648398081622016> **Discohook**! The easiest way to personalize your Discord server.\n\nThere's more info below if you want to read it. When you're ready, press **Clear All** at the top of the editor to delete what's written here.\n\n_ _",
+  "embeds": [
+    {
+      "title": "What is this?",
+      "description": "At its core, Discohook is a simple message designer. You can use it to send fully customizable messages to your Discord server with the use of [webhooks](https://support.discord.com/hc/en-us/articles/228383668).",
+      "color": 5814783,
+      "fields": [
+        {
+          "name": "Discohook Utils - complementary bot",
+          "value": "You can [invite our bot here](https://discohook.app/bot). In case you recognize that name, Discohook [merged with Discohook Utils](https://discohook.app/guide/deprecated/migrate-utils) in 2024. If you have Discobot in your server, invite Discohook Utils instead for all future use."
+        }
+      ]
+    },
+    {
+      "title": "Get started",
+      "description": "- To send your first webhook message, click **Add Webhook** at the top left of the editor.\n- You'll be prompted to put in the URL of a webhook you have already created, or make a new one on the spot with **Create Webhook**.\n - If you create a new webhook with this button, you'll be able to add buttons to your message as well.\n- Finish up by clicking **Add Webhook** inside the prompt.\n - You should now see your webhook name & avatar at the top of the editor. If you would like to edit this webhook, click the pencil icon. To change the name/avatar for just one message, use the **Profile** section of the editor.\n- Now click **Send**. Choose which messages you would like to send with your webhook (they are all enabled by default).",
+      "color": 5814783
+    }
+  ],
+  "components": [
+    {
+      "type": 1,
+      "components": [
+        {
+          "type": 2,
+          "style": 5,
+          "label": "Support Server",
+          "url": "https://discohook.app/discord"
+        },
+        {
+          "type": 2,
+          "style": 5,
+          "label": "Invite Bot",
+          "url": "https://discohook.app/bot"
+        }
+      ]
+    }
+  ]
+},
+{
+  "content": "<@&988300145064046702>明日から豊作サモン",
+  "embeds": [
+    {
+      "title": "荒野のサモン",
+      "description": "2025/9/2 (火) 4PM ～ 7日間",
+      "url": "https://bbcamp.info/docs/harvest-summon-2025/",
+      "color": 13632027,
+      "footer": {
+        "text": "BirksG",
+        "icon_url": "https://media.discordapp.net/attachments/985400637795762236/1210787481901862962/birksg.png?ex=667a36b7&is=6678e537&hm=346dbc8afcf712fe91e85ab7eb05bed6e76694909684a23c95a0e013032f2b1a&format=webp&quality=lossless&width=681&height=681&"
+      },
+      "image": {
+        "url": "https://media.discordapp.net/attachments/985400637795762236/1411995092692111380/banner-harvest-summon-2025.png?ex=68b6ae67&is=68b55ce7&hm=c6ff175f252d0f32c7c1a98af8d977a70be14b0fdfe03953a718d35cb1600dbb&=&format=webp&quality=lossless&width=960&height=185"
+      },
+      "fields": [
+        {
+          "name": "**注目英雄**",
+          "value": "\n明日からなので気が早いですが、細かくと計算や画立てる方のために事前告知\n\n- <:emblemfire:989041476833017886> [バーソロミュー](https://bbcamp.info/herodb/stravia) :new:\n- <:emblemdark:989041586996391946> [エルスベス](https://bbcamp.info/herodb/ascian) :new:\n※この2体、数値などにやや自信なしですのでご注意を\n※★5はこの2年でリリースされた英雄：478体\n"
+        },
+        {
+          "name": "__**サモンコスト**__",
+          "value": "<:gems:990510652760154112>のみ\n- 1サモン：450<:gems:990510652760154112> \n- 10サモン：3900<:gems:990510652760154112>\n- 30サモン：10800<:gems:990510652760154112>\n\nきょうyりょくボーナスドローあり、1サモンごとに最低1回の追加ドロー獲得\n詳細は<:kblogo:990882922192072724>知識ベースでどうぞ（英雄リストもあるよ）\n\n[豊作サモン2025](https://bbcamp.info/docs/harvest-summon-2025/)\n\n**確率**\n- ★3レア：71.0%\n- ★4エピック：26.5%\n- ★5レジェンド：2.3%\n- ★5レジェンド注目英雄：0.3%\n_ _"
+        }
+      ]
+    }
+  ],
+  "attachments": []
+},
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "第332回 今週のトナメ",
+      "description": "2025/8/31 4PM～\n\nトーナメント開始前に防衛準備のために発行しています。\nもしよかったら、スレに防衛貼ってね。\n_ _",
+      "color": 16098851,
+      "image": {
+        "url": "https://global.discourse-cdn.com/smallgiantgames/original/4X/d/5/e/d5e9ab4ede251dcb8ace40779c4f0f4f9e1572e1.jpeg"
+      },
+      "thumbnail": {
+        "url": ""
+      },
+      "author": {
+        "name": "BirksG",
+        "icon_url": "https://media.discordapp.net/attachments/985400637795762236/1210787481901862962/birksg.png?ex=66651eb7&is=6663cd37&hm=6d935e806adc7e7f2fc6c88c67af07f29b5c526f4d4b32b0d32f74760f826171&"
+      },
+      "fields": [
+        {
+          "name": "**レア度**",
+          "value": ":star::five:",
+          "inline": true
+        },
+        {
+          "name": "**ルール**",
+          "value": "<:rushattack:995335834561679482>ラッシュ\n_ _",
+          "inline": true
+        },
+        {
+          "name": "**属性**",
+          "value": "全属性OK",
+          "inline": true
+        },
+        {
+          "name": "_ _",
+          "value": "**ラッシュアタック**：```全員のマナ速度が超高速化```\n_ _\n↓前回同条件時のランキング**トップ10**（2024/12/8）"
+        }
+      ]
+    }
+  ],
+  "attachments": [],
+  "thread_name": "第332回 今週のトナメ"
+}

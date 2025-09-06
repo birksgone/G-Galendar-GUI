@@ -18,6 +18,7 @@ from modules.translation_engine import create_translation_dicts
 from modules.display_formatter import format_dataframe_for_display, to_html_table
 from modules.diff_engine import compare_dataframes
 from modules.forum_post_creator import render_forum_post_creator
+from modules.discord_post_creator import render_discord_post_creator
 
 DATA_DIR = Path("data")
 CONFIG_FILE = DATA_DIR / "config.json"
@@ -207,18 +208,30 @@ if latest_folder:
             presets = {
                 "Standard": standard_cols,
                 "All Columns": ordered_all_cols,
-                "Changes Only": []  # Empty list indicates forum post mode
+                "Changes Only": []  # Empty list indicates post creator mode
             }
+            
+            # Post type selection
+            post_types = ["Forum Post", "Discord Post"]
+            selected_post_type = st.selectbox(
+                "Post Type", 
+                post_types,
+                key="post_type_select",
+                index=0
+            )
             
             preset_choice = st.radio("Presets", list(presets.keys()), horizontal=True, key="preset_radio")
             
             if preset_choice == "Changes Only":
-                # Show forum post creator for changed events only
+                # Show appropriate post creator based on selection
                 diff_df = comparison_df[comparison_df['_diff_status'] != 'unchanged'].copy()
                 if not diff_df.empty:
-                    render_forum_post_creator(diff_df, en_map, ja_map, timezone)
+                    if selected_post_type == "Forum Post":
+                        render_forum_post_creator(diff_df, en_map, ja_map, timezone)
+                    elif selected_post_type == "Discord Post":
+                        render_discord_post_creator(diff_df, en_map, ja_map, timezone)
                 else:
-                    st.info("No changes found to create forum posts.")
+                    st.info("No changes found to create posts.")
             else:
                 # Show normal table view
                 with st.expander("Customize Columns", expanded=False):

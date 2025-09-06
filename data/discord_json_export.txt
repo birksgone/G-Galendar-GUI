@@ -1,0 +1,29 @@
+{
+  "content": "<@&988300145064046702>明日からWilderness",
+  "embeds": [
+    {
+      "title": "Wilderness",
+      "description": "{start_date_full} 4PM ～ 4日間",
+      "url": "{event_url}",
+      "color": 13632027,
+      "footer": {
+        "text": "BirksG",
+        "icon_url": "https://media.discordapp.net/attachments/985400637795762236/1210787481901862962/birksg.png?ex=667a36b7&is=6678e537&hm=346dbc8afcf712fe91e85ab7eb05bed6e76694909684a23c95a0e013032f2b1a&format=webp&quality=lossless&width=681&height=681&"
+      },
+      "image": {
+        "url": "{banner_url}"
+      },
+      "fields": [
+        {
+          "name": "**注目英雄**",
+          "value": "\n明日からなので気が早いですが、細かくと計算や画立てる方のために事前告知\n\n- <:emblemfire:989041476833017886> [Lennart<br>Leonie<br>Rajesh<br>Gastille](https://bbcamp.info/herodb/stravia) :new:\n- <:emblemdark:989041586996391946> [{featured_hero_2}](https://bbcamp.info/herodb/ascian) :new:\n※この2体、数値などにやや自信なしですのでご注意を\n※★5はこの2年でリリースされた英雄：478体\n"
+        },
+        {
+          "name": "__**サモンコスト**__",
+          "value": "<:gems:990510652760154112>のみ\n- 1サモン：450<:gems:990510652760154112> \n- 10サモン：3900<:gems:990510652760154112>\n- 30サモン：10800<:gems:990510652760154112>\n\nきょうyりょくボーナスドローあり、1サモンごとに最低1回の追加ドロー獲得\n詳細は<:kblogo:990882922192072724>知識ベースでどうぞ（英雄リストもあるよ）\n\n[Wilderness]({event_url})\n\n**確率**\n- ★3レア：71.0%\n- ★4エピック：26.5%\n- ★5レジェンド：2.3%\n- ★5レジェンド注目英雄：0.3%\n_ _"
+        }
+      ]
+    }
+  ],
+  "attachments": []
+}

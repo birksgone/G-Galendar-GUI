@@ -30,12 +30,13 @@ The application uses two main sources of data:
 
 ## 3. Core Modules
 
--   `app.py`: The main Streamlit application script. It handles the UI, user input, and orchestrates the calls to other modules. This is the primary entry point for all functionality including calendar comparison and forum post creation.
+-   `app.py`: The main Streamlit application script. It handles the UI, user input, and orchestrates the calls to other modules. This is the primary entry point for all functionality including calendar comparison, forum post creation, and Discord post creation.
 -   `modules/data_loader.py`: Responsible for loading all data. It reads the local event CSVs and downloads the hero data from Google Drive.
 -   `modules/translation_engine.py`: Handles the translation of hero and dragon names. It creates translation maps from the `hero_master.csv` data.
 -   `modules/diff_engine.py`: Compares two versions of the event data and identifies differences.
 -   `modules/display_formatter.py`: Formats the data for display in the UI, including generating the final HTML table.
 -   `modules/forum_post_creator.py`: Handles forum post creation functionality integrated within the main application.
+-   `modules/discord_post_creator.py`: Handles Discord post creation with JSON template system for Discohook integration.
 
 ## 4. Execution Flow
 
@@ -49,5 +50,8 @@ The application uses two main sources of data:
     -   Returns all data in a dictionary.
 5.  `app.py` then passes the data to `translation_engine.py` and `diff_engine.py` for processing.
 6.  The final, processed data is displayed in a formatted table in the UI.
+7.  For post creation, users can select between "Forum Post" and "Discord Post" modes:
+    -   **Forum Post**: Generates text-based forum posts using text templates
+    -   **Discord Post**: Generates JSON formatted posts for Discohook using JSON templates
 
-All functionality including calendar comparison and forum post creation is handled within the single `app.py` application.
+All functionality including calendar comparison, forum post creation, and Discord post creation is handled within the single `app.py` application.

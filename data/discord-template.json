@@ -1,0 +1,97 @@
+[
+  {
+    "name": "豊作サモン テンプレート",
+    "description": "豊作サモン用のDiscord投稿テンプレート",
+    "template": {
+      "content": "<@&988300145064046702>明日から豊作サモン",
+      "embeds": [
+        {
+          "title": "{event_title_ja}",
+          "description": "{start_date_full} 4PM ～ {duration_days}日間",
+          "url": "{event_url}",
+          "color": 13632027,
+          "footer": {
+            "text": "BirksG",
+            "icon_url": "https://bbcamp.info/wp-content/uploads/camp-img/discord/birksg.png"
+          },
+          "image": {
+            "url": "https://media.discordapp.net/attachments/985400637795762236/1039062129019465799/banner-covenant-summon.png?ex=66917444&is=669022c4&hm=6703f0a4ad005035595ea4d07afc7375d956239221f3279ccc23007c9543e59d&format=webp&quality=lossless&width=900&height=212&"
+          },
+          "fields": [
+            {
+              "name": "**注目英雄**",
+              "value": "\n明日からなので気が早いですが、細かくと計算や画立てる方のために事前告知\n\n- <:emblemfire:989041476833017886> [{featured_hero_1_ja}](https://bbcamp.info/herodb/stravia) :new:\n- <:emblemdark:989041586996391946> [{featured_hero_2_ja}](https://bbcamp.info/herodb/ascian) :new:\n※この2体、数値などにやや自信なしですのでご注意を\n※★5はこの2年でリリースされた英雄：478体\n"
+            },
+            {
+              "name": "__**サモンコスト**__",
+              "value": "<:gems:990510652760154112>のみ\n- 1サモン：450<:gems:990510652760154112> \n- 10サモン：3900<:gems:990510652760154112>\n- 30サモン：10800<:gems:990510652760154112>\n\nきょうyりょくボーナスドローあり、1サモンごとに最低1回の追加ドロー獲得\n詳細は<:kblogo:990882922192072724>知識ベースでどうぞ（英雄リストもあるよ）\n\n[{event_name}]({event_url})\n\n**確率**\n- ★3レア：71.0%\n- ★4エピック：26.5%\n- ★5レジェンド：2.3%\n- ★5レジェンド注目英雄：0.3%\n_ _"
+            }
+          ]
+        }
+      ],
+      "attachments": []
+    },
+    "variables": {
+      "event_name": "イベント名",
+      "start_date_md": "開始日（月/日）",
+      "start_date_full": "開始日（YYYY/M/D (曜日)）",
+      "start_date_weekday": "開始曜日（月火水木金土日）",
+      "duration_days": "開催日数", 
+      "event_url": "イベントURL",
+      "banner_url": "バナー画像URL",
+      "featured_hero_1_en": "注目英雄1（英語）",
+      "featured_hero_2_en": "注目英雄2（英語）",
+      "featured_hero_1_ja": "注目英雄1（日本語）",
+      "featured_hero_2_ja": "注目英雄2（日本語）"
+    }
+  },
+  {
+    "name": "トナメテンプレート",
+    "description": "今週のトナメ用のDiscord投稿テンプレート",
+    "template": {
+      "content": null,
+      "embeds": [
+        {
+          "title": "第{week_number}回 今週のトナメ",
+          "description": "{start_date_md} 4PM～\n\nトーナメント開始前に防衛準備のために発行しています。\nもしよかったら、スレに防衛貼ってね。\n_ _",
+          "color": 16098851,
+          "image": {
+            "url": "{banner_url}"
+          },
+          "author": {
+            "name": "BirksG",
+            "icon_url": "https://media.discordapp.net/attachments/985400637795762236/1210787481901862962/birksg.png?ex=66651eb7&is=6663cd37&hm=6d935e806adc7e7f2fc6c88c67af07f29b5c526f4d4b32b0d32f74760f826171&"
+          },
+          "fields": [
+            {
+              "name": "**レア度**",
+              "value": ":star::five:",
+              "inline": true
+            },
+            {
+              "name": "**ルール**",
+              "value": "<:rushattack:995335834561679482>ラッシュ\n_ _",
+              "inline": true
+            },
+            {
+              "name": "**属性**",
+              "value": "全属性OK",
+              "inline": true
+            },
+            {
+              "name": "_ _",
+              "value": "**ラッシュアタック**：```全員のマナ速度が超高速化```\n_ _\n↓前回同条件時のランキング**トップ10**（2024/12/8）"
+            }
+          ]
+        }
+      ],
+      "attachments": [],
+      "thread_name": "第{week_number}回 今週のトナメ"
+    },
+    "variables": {
+      "week_number": "週番号",
+      "start_date_md": "開始日（月/日）",
+      "banner_url": "バナー画像URL"
+    }
+  }
+]

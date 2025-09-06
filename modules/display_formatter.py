@@ -72,6 +72,20 @@ def format_dataframe_for_display(df, type_mapping_rules, en_map, ja_map, timezon
     )
     df_copy['Event Name'] = df_copy['Post Name']
     
+    # Add English and Japanese event titles from mapping rules
+    def _get_event_titles(row, rules):
+        for rule in sorted(rules, key=lambda x: x.get('priority', float('inf'))):
+            conditions = rule.get('conditions', [])
+            if all(_check_condition(row, cond) for cond in conditions):
+                event_title_en = rule.get('event_title_en', row.get('Post Name', ''))
+                event_title_ja = rule.get('event_title_ja', row.get('Post Name', ''))
+                return pd.Series([event_title_en, event_title_ja])
+        return pd.Series([row.get('Post Name', ''), row.get('Post Name', '')])
+    
+    df_copy[['event_title_en', 'event_title_ja']] = df_copy.apply(
+        _get_event_titles, args=(type_mapping_rules,), axis=1
+    )
+    
     df_copy['Start Time'] = convert_posix_to_datetime(df_copy['startDate'], timezone)
     df_copy['End Time'] = convert_posix_to_datetime(df_copy['endDate'], timezone)
 

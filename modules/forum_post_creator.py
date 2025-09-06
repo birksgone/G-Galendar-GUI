@@ -228,6 +228,14 @@ def render_forum_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map: d
         ja_template_str = templates.get(ja_template_key, f"**Japanese template for '{status}' not found.**")
 
         template_data = row.to_dict()
+        
+        # デバッグ: 利用可能なテンプレート変数を表示
+        with st.expander(f"🔍 Debug: Available Template Variables for {row.get('Event Name', '')}"):
+            st.write("**Available variables:**")
+            for key, value in template_data.items():
+                if key.startswith('event_title') or key in ['Event Name', 'start_date_iso', 'end_date_iso', 'Duration']:
+                    st.write(f"- `{key}`: `{value}` (type: {type(value).__name__})")
+        
         en_text = process_custom_template(en_template_str, template_data)
         ja_text = process_custom_template(ja_template_str, template_data)
 
@@ -249,4 +257,3 @@ def render_forum_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map: d
         st.text_area("English Summary", value=summary_en, height=300, key="summary_en")
     with col2:
         st.text_area("Japanese Summary", value=summary_ja, height=300, key="summary_ja")
-
