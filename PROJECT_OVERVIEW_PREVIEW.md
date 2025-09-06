@@ -30,16 +30,15 @@ The application uses two main sources of data:
 
 ## 3. Core Modules
 
--   `app.py`: The main Streamlit application script. It handles the UI, user input, and orchestrates the calls to other modules. This is the primary entry point for all functionality including calendar comparison and forum post creation.
+-   `app.py`: The main Streamlit application script. It handles the UI, user input, and orchestrates the calls to other modules.
 -   `modules/data_loader.py`: Responsible for loading all data. It reads the local event CSVs and downloads the hero data from Google Drive.
 -   `modules/translation_engine.py`: Handles the translation of hero and dragon names. It creates translation maps from the `hero_master.csv` data.
 -   `modules/diff_engine.py`: Compares two versions of the event data and identifies differences.
 -   `modules/display_formatter.py`: Formats the data for display in the UI, including generating the final HTML table.
--   `modules/forum_post_creator.py`: Handles forum post creation functionality integrated within the main application.
 
 ## 4. Execution Flow
 
-1.  The user launches the application via `streamlit run app.py`.
+1.  The user launches the app via `streamlit run app.py`.
 2.  The user selects the "Latest Data" folder (and optionally a "Previous Data" folder) in the sidebar.
 3.  When the "Load Data" button is clicked, `app.py` calls `modules.data_loader.load_all_data`.
 4.  `data_loader.py`:
@@ -49,5 +48,3 @@ The application uses two main sources of data:
     -   Returns all data in a dictionary.
 5.  `app.py` then passes the data to `translation_engine.py` and `diff_engine.py` for processing.
 6.  The final, processed data is displayed in a formatted table in the UI.
-
-All functionality including calendar comparison and forum post creation is handled within the single `app.py` application.

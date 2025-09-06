@@ -78,10 +78,11 @@ G-GALENDAR-GUI/
 │   ├── data_loader.py         # 全データ（CSV, Google Sheets）の読み込み
 │   ├── diff_engine.py         # 2つのデータセットを比較し、差分情報を生成
 │   ├── display_formatter.py   # データを表示用に整形（翻訳、HTMLテーブル生成など）
+│   ├── forum_post_creator.py  # フォーラム投稿作成機能
 │   └── translation_engine.py  # ヒーロー名の翻訳辞書を作成
 │
 ├── styles.css                 # テーブルの見た目を定義するCSSファイル
-└── app.py                     # UIの配置と各モジュールの呼び出しを行うメインスクリプト
+└── app.py                     # UIの配置と各モジュールの呼び出しを行うメインスクリプト（全機能統合）
 ```
 
 ### 参照する主要なデータファイル
