@@ -18,12 +18,15 @@
 #
 # --- General ---
 # {Event Name}, {Display Type}, {Duration}, {_diff_status}
+# {event_title_en}, {event_title_ja} -> Event titles in English/Japanese
 #
 # --- English Heroes ---
-# {Featured Heroes (EN)}, {Non-Featured Heroes (EN)}
-#
+# {Featured Heroes (EN)}, {Non-Featured Heroes (EN)} -> HTML display with line breaks
+# {Featured Heroes (EN) Template}, {Non-Featured Heroes (EN) Template} -> Template-friendly with commas
+
 # --- Japanese Heroes ---
-# {Featured Heroes (JA)}, {Non-Featured Heroes (JA)}
+# {Featured Heroes (JA)}, {Non-Featured Heroes (JA)} -> HTML display with line breaks
+# {Featured Heroes (JA) Template}, {Non-Featured Heroes (JA) Template} -> Template-friendly with full-width commas
 #
 # --- Date & Time (Formatted Strings) ---
 # {Start Time}, {End Time} -> Full date and time, e.g., "2025-09-05 10:00"
@@ -34,38 +37,38 @@
 # =================================================================
 
 [new_en]
-- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {Event Name} added — {Featured Heroes (EN)}
+- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {event_title_en} added — {Featured Heroes (EN) Template}
 
 [new_ja]
-{start_date_md} {Event Name}追加：{Featured Heroes (JA)}
+{start_date_md} {event_title_ja}追加：{Featured Heroes (JA) Template}
 
-- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {Event Name} featured heroes updated — {Featured Heroes (EN)}
+- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {event_title_en} featured heroes updated — {Featured Heroes (EN) Template}
 
 
 
 
 [modified_en]
-- [date=please time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {Event Name} featured hero updated — {Featured Heroes (EN)}
+- [date=please time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {event_title_en} featured hero updated — {Featured Heroes (EN) Template}
 
 [modified_ja]
-{start_date_md} {Event Name} 注目英雄変更：{Featured Heroes (JA)}
+{start_date_md} {event_title_ja} 注目英雄変更：{Featured Heroes (JA) Template}
 
 
 
 
 
 [shifted_en]
-- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {Event Name} rescheduled from {original_start_date_iso_en} — {Featured Heroes (EN)}
+- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {event_title_en} rescheduled from {original_start_date_iso_en} — {Featured Heroes (EN) Template}
 
 [shifted_ja]
-{start_date_md} {Event Name} {original_start_date_iso_md}からスケジュール変更：{Featured Heroes (JA)}
+{start_date_md} {event_title_ja} {original_start_date_iso_md}からスケジュール変更：{Featured Heroes (JA) Template}
 
 
 
 
 
 [deleted_en]
-- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {Event Name} canceled — {Featured Heroes (EN)}
+- [date={start_date_iso} time={start_time_iso} format="MMM D" timezone="UTC" timezones="Japan|America/Los_Angeles|Europe/Paris"]: {event_title_en} canceled — {Featured Heroes (EN) Template}
 
 [deleted_ja]
-{start_date_md} {Event Name} キャンセル：{Featured Heroes (JA)}
+{start_date_md} {event_title_ja} キャンセル：{Featured Heroes (JA) Template}

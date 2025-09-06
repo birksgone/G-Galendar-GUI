@@ -110,6 +110,12 @@ def render_forum_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map: d
 
     # Full dataframe with all columns for templating
     display_df_all_cols = format_dataframe_for_display(diff_df_raw, rules, en_map, ja_map, timezone=timezone)
+    
+    # Add template-friendly hero columns (without HTML line breaks)
+    display_df_all_cols['Featured Heroes (EN) Template'] = display_df_all_cols['Featured Heroes (EN)'].str.replace('<br>', ', ')
+    display_df_all_cols['Non-Featured Heroes (EN) Template'] = display_df_all_cols['Non-Featured Heroes (EN)'].str.replace('<br>', ', ')
+    display_df_all_cols['Featured Heroes (JA) Template'] = display_df_all_cols['Featured Heroes (JA)'].str.replace('<br>', '、')
+    display_df_all_cols['Non-Featured Heroes (JA) Template'] = display_df_all_cols['Non-Featured Heroes (JA)'].str.replace('<br>', '、')
 
     # Date filter
     st.subheader("Filter by Date Range")
@@ -168,12 +174,11 @@ def render_forum_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map: d
     else:
         filtered_display_df = display_df_all_cols
 
-    # Table view (standard columns)
+    # Table view (standard columns) - Exclude Event Name column as requested
     st.subheader("Difference Data (Standard View)")
     standard_cols = [
         "Icon",
         "Display Type",
-        "Event Name",
         "Start Time",
         "End Time",
         "Duration",
@@ -201,7 +206,6 @@ def render_forum_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map: d
         "Non-Featured Heroes (EN)": "Non-Feat.(EN)",
         "Featured Heroes (JA)": "Feat.(JA)",
         "Non-Featured Heroes (JA)": "Non-Feat.(JA)",
-        "Event Name": "Event ID",
         "_diff_status": "Diff Status",
     }
 
@@ -233,11 +237,21 @@ def render_forum_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map: d
         with st.expander(f"🔍 Debug: Available Template Variables for {row.get('Event Name', '')}"):
             st.write("**Available variables:**")
             for key, value in template_data.items():
-                if key.startswith('event_title') or key in ['Event Name', 'start_date_iso', 'end_date_iso', 'Duration']:
+                if key.startswith('event_title') or key in ['Event Name', 'Display Type', 'start_date_iso', 'end_date_iso', 'Duration']:
                     st.write(f"- `{key}`: `{value}` (type: {type(value).__name__})")
+        
+        # テンプレート処理前にDisplay Typeをevent_titleで上書き（後方互換性のため）
+        if 'event_title_en' in template_data:
+            template_data['Display Type'] = template_data['event_title_en']
         
         en_text = process_custom_template(en_template_str, template_data)
         ja_text = process_custom_template(ja_template_str, template_data)
+        
+        # 日本語テンプレートではDisplay Typeを日本語イベント名で上書き
+        if 'event_title_ja' in template_data:
+            ja_template_data = template_data.copy()
+            ja_template_data['Display Type'] = ja_template_data['event_title_ja']
+            ja_text = process_custom_template(ja_template_str, ja_template_data)
 
         all_en_texts.append(en_text)
         all_ja_texts.append(ja_text)
