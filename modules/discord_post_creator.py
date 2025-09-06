@@ -205,11 +205,7 @@ def render_discord_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map:
         st.error("Selected template not found")
         return
 
-    # Show template variables info
-    with st.expander("Template Variables Info"):
-        st.write("Available variables for this template:")
-        for var_name, var_desc in selected_template.get("variables", {}).items():
-            st.write(f"- `{{{var_name}}}`: {var_desc}")
+    # テンプレート変数情報の表示を削除（JSONを見れば分かるため）
 
     # Event selection
     st.subheader("Event Selection")
@@ -303,7 +299,7 @@ def render_discord_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map:
         event_data['has_non_featured_heroes'] = False
         event_data['non_featured_section'] = ""
     
-    # Add weekday information if Start Time is available
+    # Add weekday and time information if Start Time is available
     if 'Start Time' in event_data and pd.notna(event_data['Start Time']):
         try:
             start_date = event_data['Start Time']
@@ -325,6 +321,29 @@ def render_discord_post_creator(diff_df_raw: pd.DataFrame, en_map: dict, ja_map:
                 # Also ensure start_date_iso is properly formatted string
                 if 'start_date_iso' not in event_data or not isinstance(event_data['start_date_iso'], str):
                     event_data['start_date_iso'] = f"{year}-{month:02d}-{day:02d}"
+                
+                # Add time formatting for Discord (UTC to JST conversion + 12-hour format with AM/PM)
+                if hasattr(start_date, 'time'):
+                    time_part = start_date.time()
+                    hour = time_part.hour
+                    minute = time_part.minute
+                    
+                    # Convert UTC to JST (+9 hours)
+                    jst_hour = (hour + 9) % 24
+                    
+                    # Convert to 12-hour format with AM/PM
+                    if jst_hour == 0:
+                        event_data['start_time_12h'] = f"12:{minute:02d}AM"
+                    elif jst_hour < 12:
+                        event_data['start_time_12h'] = f"{jst_hour}:{minute:02d}AM"
+                    elif jst_hour == 12:
+                        event_data['start_time_12h'] = f"12:{minute:02d}PM"
+                    else:
+                        event_data['start_time_12h'] = f"{jst_hour-12}:{minute:02d}PM"
+                    
+                    # Also add 24-hour format
+                    event_data['start_time_24h'] = f"{jst_hour:02d}:{minute:02d}"
+                    
         except (ValueError, TypeError, AttributeError) as e:
             st.error(f"Error processing date: {str(e)}")
             # Fallback to start_date_iso if available

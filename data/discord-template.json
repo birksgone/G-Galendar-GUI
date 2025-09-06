@@ -7,7 +7,7 @@
       "embeds": [
         {
           "title": "{event_title_ja}",
-          "description": "{start_date_full} 4PM ～ {duration_days}日間",
+          "description": "{start_date_full} {start_time_12h} ～ {duration_days}日間",
           "url": "{event_url}",
           "color": 13632027,
           "footer": {
@@ -53,7 +53,7 @@
       "embeds": [
         {
           "title": "第{week_number}回 今週のトナメ",
-          "description": "{start_date_md} 4PM～\n\nトーナメント開始前に防衛準備のために発行しています。\nもしよかったら、スレに防衛貼ってね。\n_ _",
+          "description": "{start_date_md} {start_time_12h}～\n\nトーナメント開始前に防衛準備のために発行しています。\nもしよかったら、スレに防衛貼ってね。\n_ _",
           "color": 16098851,
           "image": {
             "url": "{banner_url}"
@@ -102,7 +102,7 @@
       "embeds": [
         {
           "title": "{event_title_ja}",
-          "description": "{start_date_full} 午後4時～ {duration_days}日間",
+          "description": "{start_date_full} {start_time_12h} ～ {duration_days}日間",
           "url": "{event_url}",
           "color": 13632027,
           "footer": {

@@ -149,6 +149,10 @@ if st.sidebar.button("Load Data", key="load_data_button"):
     config['diff_folder'] = diff_folder
     save_json_file(CONFIG_FILE, config)
     st.rerun()
+
+# JSON変換ツールへのリンク
+st.sidebar.markdown("---")
+st.sidebar.page_link("pages/_2_JSON_to_Template_Converter.py", label="🔄 JSON Template Converter", icon="🔄")
         
 if latest_folder:
     try:
