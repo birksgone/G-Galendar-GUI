@@ -57,7 +57,11 @@ def _translate_and_format_heroes(df, prefix, lang_map, separator):
                 if new_flag_col in row and row[new_flag_col] == True:
                     hero_name += " 🆕"
                 heroes.append(hero_name)
-        hero_lists.append(separator.join(heroes) if heroes else "")
+        # Use line breaks for HTML display, but keep original separators for internal use
+        if separator in [", ", "、"]:  # These are the display separators
+            hero_lists.append("<br>".join(heroes) if heroes else "")
+        else:
+            hero_lists.append(separator.join(heroes) if heroes else "")
     return hero_lists
 
 def format_dataframe_for_display(df, type_mapping_rules, en_map, ja_map, timezone):

@@ -17,6 +17,7 @@ from modules.data_loader import load_all_data
 from modules.translation_engine import create_translation_dicts
 from modules.display_formatter import format_dataframe_for_display, to_html_table
 from modules.diff_engine import compare_dataframes
+from modules.forum_post_creator import render_forum_post_creator
 
 DATA_DIR = Path("data")
 CONFIG_FILE = DATA_DIR / "config.json"
@@ -152,17 +153,6 @@ if latest_folder:
     try:
         comparison_df, en_map, ja_map = load_and_process_data(latest_folder, diff_folder)
         
-        if not comparison_df.empty:
-            if st.sidebar.button("✍️ Forum Post", key="forum_post_button"):
-                diff_df = comparison_df[comparison_df['_diff_status'] != 'unchanged'].copy()
-                if not diff_df.empty:
-                    st.session_state['diff_data'] = diff_df
-                    st.session_state['en_map'] = en_map
-                    st.session_state['ja_map'] = ja_map
-                    st.switch_page("pages/_1_Forum_Post_Creator.py")
-                else:
-                    st.sidebar.warning("No differences found.")
-        
         st.header(f"Event Display: `{latest_folder}`")
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -216,32 +206,42 @@ if latest_folder:
 
             presets = {
                 "Standard": standard_cols,
-                "All Columns": ordered_all_cols
+                "All Columns": ordered_all_cols,
+                "Changes Only": []  # Empty list indicates forum post mode
             }
             
             preset_choice = st.radio("Presets", list(presets.keys()), horizontal=True, key="preset_radio")
             
-            with st.expander("Customize Columns", expanded=False):
-                if 'selected_cols' not in st.session_state:
-                    st.session_state.selected_cols = presets["Standard"]
-                if st.session_state.get('current_preset') != preset_choice:
-                    st.session_state.selected_cols = presets[preset_choice]
-                    st.session_state.current_preset = preset_choice
+            if preset_choice == "Changes Only":
+                # Show forum post creator for changed events only
+                diff_df = comparison_df[comparison_df['_diff_status'] != 'unchanged'].copy()
+                if not diff_df.empty:
+                    render_forum_post_creator(diff_df, en_map, ja_map, timezone)
+                else:
+                    st.info("No changes found to create forum posts.")
+            else:
+                # Show normal table view
+                with st.expander("Customize Columns", expanded=False):
+                    if 'selected_cols' not in st.session_state:
+                        st.session_state.selected_cols = presets["Standard"]
+                    if st.session_state.get('current_preset') != preset_choice:
+                        st.session_state.selected_cols = presets[preset_choice]
+                        st.session_state.current_preset = preset_choice
 
-                selected_labels = st.multiselect(
-                    "Select columns to display:",
-                    options=[header_labels.get(col, col) for col in ordered_all_cols],
-                    default=[header_labels.get(col, col) for col in st.session_state.selected_cols if col in header_labels],
-                )
-                st.session_state.selected_cols = [label_to_col_map[label] for label in selected_labels]
+                    selected_labels = st.multiselect(
+                        "Select columns to display:",
+                        options=[header_labels.get(col, col) for col in ordered_all_cols],
+                        default=[header_labels.get(col, col) for col in st.session_state.selected_cols if col in header_labels],
+                    )
+                    st.session_state.selected_cols = [label_to_col_map[label] for label in selected_labels]
 
-            selected_user_cols = st.session_state.selected_cols
-            final_df = filtered_df.copy() 
-            
-            st.markdown('<div class="table-container">', unsafe_allow_html=True)
-            html_table = to_html_table(final_df, header_labels, columns_to_display=selected_user_cols, data_dir=latest_folder)
-            st.markdown(html_table, unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+                selected_user_cols = st.session_state.selected_cols
+                final_df = filtered_df.copy() 
+                
+                st.markdown('<div class="table-container">', unsafe_allow_html=True)
+                html_table = to_html_table(final_df, header_labels, columns_to_display=selected_user_cols, data_dir=latest_folder)
+                st.markdown(html_table, unsafe_allow_html=True)
+                st.markdown('</div>', unsafe_allow_html=True)
 
         else:
             st.warning("No events found in the selected date range.")
