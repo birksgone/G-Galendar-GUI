@@ -59,11 +59,19 @@ def load_history(filepath):
         return list(dict.fromkeys(filter(None, lines)))
 
 def save_to_history(filepath, new_entry):
+    print(f"DEBUG: save_to_history called with filepath={filepath}, new_entry='{new_entry}'")
     history = load_history(filepath)
-    if new_entry in history: history.remove(new_entry)
+    print(f"DEBUG: Current history: {history}")
+    if new_entry in history: 
+        print(f"DEBUG: Removing existing entry '{new_entry}' from history")
+        history.remove(new_entry)
     if new_entry:
+        print(f"DEBUG: Inserting '{new_entry}' at position 0")
         history.insert(0, new_entry)
-    with open(filepath, "w", encoding="utf-8") as f: f.write("\n".join(history))
+    print(f"DEBUG: Final history to save: {history}")
+    with open(filepath, "w", encoding="utf-8") as f: 
+        f.write("\n".join(history))
+    print(f"DEBUG: History saved successfully to {filepath}")
 
 @st.cache_data
 def load_and_process_data(latest_folder, diff_folder):

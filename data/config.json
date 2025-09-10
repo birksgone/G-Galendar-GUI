@@ -1,5 +1,5 @@
 {
-  "event_folder": "V7900R-2025-09-03",
+  "event_folder": "V7900R-2025-09-09",
   "diff_folder": "V7900R-2025-08-27",
   "lang_folder": "V79/TextAsset-V79",
   "filter_start_date": "2025-08-30",
@@ -20,6 +20,6 @@
     "Non-Featured Heroes (JA)",
     "Event Name"
   ],
-  "post_start": "2025-08-29",
-  "post_end": "2025-09-28"
+  "post_start": "2025-09-10",
+  "post_end": "2025-09-10"
 }
