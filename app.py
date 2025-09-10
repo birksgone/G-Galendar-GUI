@@ -59,19 +59,13 @@ def load_history(filepath):
         return list(dict.fromkeys(filter(None, lines)))
 
 def save_to_history(filepath, new_entry):
-    print(f"DEBUG: save_to_history called with filepath={filepath}, new_entry='{new_entry}'")
     history = load_history(filepath)
-    print(f"DEBUG: Current history: {history}")
     if new_entry in history: 
-        print(f"DEBUG: Removing existing entry '{new_entry}' from history")
         history.remove(new_entry)
     if new_entry:
-        print(f"DEBUG: Inserting '{new_entry}' at position 0")
         history.insert(0, new_entry)
-    print(f"DEBUG: Final history to save: {history}")
     with open(filepath, "w", encoding="utf-8") as f: 
         f.write("\n".join(history))
-    print(f"DEBUG: History saved successfully to {filepath}")
 
 @st.cache_data
 def load_and_process_data(latest_folder, diff_folder):
@@ -142,6 +136,8 @@ rules = load_json_file(RULES_FILE, [])
 
 st.sidebar.header("Select Data Sources")
 latest_folder = st.sidebar.text_input("① Latest Data (Required)", value=config.get("event_folder"))
+
+# Load history and create dropdown first
 event_history = load_history(EVENT_HISTORY_FILE)
 diff_options = [h for h in event_history if h != latest_folder]
 if not diff_options:
@@ -151,6 +147,7 @@ else:
     index = diff_options.index(current_diff) if current_diff in diff_options else 0
     diff_folder = st.sidebar.selectbox("② Previous Data for Diff", diff_options, index=index)
 
+# Load history after potential updates
 if st.sidebar.button("Load Data", key="load_data_button"):
     save_to_history(EVENT_HISTORY_FILE, latest_folder)
     config['event_folder'] = latest_folder
