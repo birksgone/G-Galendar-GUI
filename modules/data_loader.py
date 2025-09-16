@@ -28,7 +28,7 @@ def download_file_from_drive(file_id, local_filepath):
         fh = io.BytesIO()
         downloader = MediaIoBaseDownload(fh, request)
         
-        done = False
+        done = Falsepip 
         while not done:
             status, done = downloader.next_chunk()
 

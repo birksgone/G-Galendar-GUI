@@ -260,6 +260,16 @@ if latest_folder:
                 selected_user_cols = st.session_state.selected_cols
                 final_df = filtered_df.copy() 
                 
+                # CSV export functionality
+                csv_data = final_df[selected_user_cols].to_csv(index=False, encoding='utf-8-sig')
+                st.download_button(
+                    label="📥 Export to CSV",
+                    data=csv_data,
+                    file_name=f"events_{latest_folder}_{date.today().isoformat()}.csv",
+                    mime="text/csv",
+                    key="csv_export_button"
+                )
+                
                 st.markdown('<div class="table-container">', unsafe_allow_html=True)
                 html_table = to_html_table(final_df, header_labels, columns_to_display=selected_user_cols, data_dir=latest_folder)
                 st.markdown(html_table, unsafe_allow_html=True)
