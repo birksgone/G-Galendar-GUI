@@ -4,8 +4,32 @@ import re
 BASE_ICON_URL = "https://bbcamp.info/wp-content/uploads/camp-img/calendar_type_icon/"
 
 def convert_posix_to_datetime(series, target_tz='UTC'):
-    utc_time = pd.to_datetime(series + 946684800, unit='s', errors='coerce').dt.tz_localize('UTC')
-    return utc_time.dt.tz_convert('Asia/Tokyo') if target_tz == 'JST' else utc_time
+    # Handle overflow by filtering out values that would cause FloatingPointError
+    max_safe_timestamp = 2**53 - 1  # Maximum safe integer in JavaScript (also prevents overflow)
+    
+    # Create a mask for values that won't cause overflow
+    safe_mask = (series + 946684800) <= max_safe_timestamp
+    
+    # Convert only safe values, others will be NaT
+    safe_values = series[safe_mask] + 946684800
+    utc_time = pd.to_datetime(safe_values, unit='s', errors='coerce')
+    
+    # Apply timezone localization only to non-NaT values
+    if not utc_time.empty:
+        utc_time = utc_time.dt.tz_localize('UTC')
+    
+    # Create result series with NaT for overflow values
+    result = pd.Series(pd.NaT, index=series.index, dtype='datetime64[ns, UTC]')
+    result[safe_mask] = utc_time
+    
+    # Convert to proper timezone only if there are valid datetime values
+    if not result.empty and result.notna().any():
+        if target_tz == 'JST':
+            result = result.dt.tz_convert('Asia/Tokyo')
+        else:
+            result = result.dt.tz_convert('UTC')
+    
+    return result
 
 def calculate_duration(start_s, end_s):
     delta = end_s - start_s
@@ -90,12 +114,12 @@ def format_dataframe_for_display(df, type_mapping_rules, en_map, ja_map, timezon
     df_copy['End Time'] = convert_posix_to_datetime(df_copy['endDate'], timezone)
 
     # Add pre-formatted ISO date and time columns for templating
-    df_copy['start_date_iso'] = df_copy['Start Time'].dt.strftime('%Y-%m-%d')
-    df_copy['start_time_iso'] = df_copy['Start Time'].dt.strftime('%H:%M:%S')
-    df_copy['end_date_iso'] = df_copy['End Time'].dt.strftime('%Y-%m-%d')
-    df_copy['end_time_iso'] = df_copy['End Time'].dt.strftime('%H:%M:%S')
-    df_copy['start_date_md'] = df_copy['Start Time'].apply(lambda x: f"{x.month}/{x.day}")
-    df_copy['end_date_md'] = df_copy['End Time'].apply(lambda x: f"{x.month}/{x.day}")
+    df_copy['start_date_iso'] = df_copy['Start Time'].apply(lambda x: x.strftime('%Y-%m-%d') if pd.notna(x) else '')
+    df_copy['start_time_iso'] = df_copy['Start Time'].apply(lambda x: x.strftime('%H:%M:%S') if pd.notna(x) else '')
+    df_copy['end_date_iso'] = df_copy['End Time'].apply(lambda x: x.strftime('%Y-%m-%d') if pd.notna(x) else '')
+    df_copy['end_time_iso'] = df_copy['End Time'].apply(lambda x: x.strftime('%H:%M:%S') if pd.notna(x) else '')
+    df_copy['start_date_md'] = df_copy['Start Time'].apply(lambda x: f"{x.month}/{x.day}" if pd.notna(x) else "")
+    df_copy['end_date_md'] = df_copy['End Time'].apply(lambda x: f"{x.month}/{x.day}" if pd.notna(x) else "")
 
     # Handle original start date for shifted events
     if 'original_startDate' in df_copy.columns:
@@ -106,7 +130,7 @@ def format_dataframe_for_display(df, type_mapping_rules, en_map, ja_map, timezon
                 return ""
             return dt.strftime('%b ') + str(dt.day)
 
-        df_copy['original_start_date_iso'] = original_start_time.dt.strftime('%Y-%m-%d').replace('NaT', '')
+        df_copy['original_start_date_iso'] = original_start_time.apply(lambda x: x.strftime('%Y-%m-%d') if pd.notna(x) else '')
         df_copy['original_start_date_iso_md'] = original_start_time.apply(lambda x: f"{x.month}/{x.day}" if pd.notna(x) else "")
         df_copy['original_start_date_iso_en'] = original_start_time.apply(format_en_date)
     else:

@@ -686,6 +686,20 @@
     "event_title_ja": "Owl"
   },
   {
+    "priority": 491,
+    "conditions": [
+      {
+        "column": "event",
+        "operator": "equals",
+        "value": "TowerMagic"
+      }
+    ],
+    "output": "Magic Tower",
+    "icon": "magicTower_ladder_button_roof.png",
+    "event_title_en": "Magic Tower",
+    "event_title_ja": "Magic Tower"
+  },
+  {
     "priority": 500,
     "conditions": [
       {
@@ -765,7 +779,7 @@
       }
     ],
     "output": "Untold Tale 1",
-    "icon": "",
+    "icon": "coin_untold_tales.png",
     "event_title_en": "Untold Tale 1 Summon",
     "event_title_ja": "語られざる物語1"
   },

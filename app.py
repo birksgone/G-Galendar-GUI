@@ -73,56 +73,65 @@ def load_and_process_data(latest_folder, diff_folder):
     データの読み込み、差分比較、翻訳マップ作成までを一括で行う。
     結果はStreamlitによってキャッシュされる。
     """
-    data = load_all_data(latest_folder, diff_folder)
-    
-    comparison_df = None
-    if data['diff_df'] is not None:
-        comparison_df = compare_dataframes(data['main_df'], data['diff_df'])
-    else:
-        comparison_df = data['main_df'].copy()
-        comparison_df['_diff_status'] = 'unchanged'
-        comparison_df['_changed_columns'] = [[] for _ in range(len(comparison_df))]
+    try:
+        data = load_all_data(latest_folder, diff_folder)
+        
+        comparison_df = None
+        if data['diff_df'] is not None:
+            comparison_df = compare_dataframes(data['main_df'], data['diff_df'])
+        else:
+            comparison_df = data['main_df'].copy()
+            comparison_df['_diff_status'] = 'unchanged'
+            comparison_df['_changed_columns'] = [[] for _ in range(len(comparison_df))]
 
-    en_map, ja_map = create_translation_dicts(data['hero_master_df'], data['g_sheet_df'])
-    
-    return comparison_df, en_map, ja_map
+        en_map, ja_map = create_translation_dicts(data['hero_master_df'], data['g_sheet_df'])
+        
+        return comparison_df, en_map, ja_map
+    except FileNotFoundError as e:
+        st.error(f"ファイルが見つかりません: {e}")
+        st.info("以下のことを確認してください:")
+        st.info("1. EMP Extractフォルダに最新のCSVファイルがあるか")
+        st.info("2. CSVファイル名が 'calendar-export-{フォルダ名}.csv' 形式になっているか")
+        st.info("3. フォルダ名が正しいか (例: V7900R-2025-09-15)")
+        raise
+    except Exception as e:
+        st.error(f"データの読み込み中にエラーが発生しました: {e}")
+        raise
 
 def debug_google_drive_data():
-    st.subheader("Debug: Google Drive Data")
-    with st.expander("Click to load and view data from Google Drive"):
+    st.subheader("Google Drive Integration Status")
+    with st.expander("Click to view Google Drive integration details"):
         try:
-            SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
-            FILE_ID = "1rpfF9gNclicG0wwtY_EMKKdlqsRBSKjB"
+            # Check if service account file exists
             SERVICE_ACCOUNT_FILE = "client_secret.json"
+            if not Path(SERVICE_ACCOUNT_FILE).exists():
+                st.warning(f"Service account file '{SERVICE_ACCOUNT_FILE}' not found.")
+                st.info("Google Drive access requires a service account JSON file.")
+                return
+            
+            st.success("Service account file found.")
+            
+            # Check if hero_master.csv exists and show info
             LOCAL_FILEPATH = Path("data") / "hero_master.csv"
-
-            creds = service_account.Credentials.from_service_account_file(
-                SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+            if LOCAL_FILEPATH.exists():
+                file_size = LOCAL_FILEPATH.stat().st_size
+                mod_time = datetime.fromtimestamp(LOCAL_FILEPATH.stat().st_mtime)
+                st.info(f"hero_master.csv file exists ({file_size} bytes)")
+                st.info(f"Last modified: {mod_time.strftime('%Y-%m-%d %H:%M:%S')}")
+                try:
+                    df = pd.read_csv(LOCAL_FILEPATH)
+                    st.write(f"File contains {len(df)} rows and {len(df.columns)} columns")
+                    st.write("Sample columns:", list(df.columns)[:5])
+                except Exception as e:
+                    st.warning(f"Could not read CSV file: {e}")
+            else:
+                st.info("hero_master.csv file will be downloaded when data is loaded")
             
-            service = build("drive", "v3", credentials=creds)
-
-            st.info(f"Downloading file with ID: {FILE_ID}...")
-            request = service.files().get_media(fileId=FILE_ID)
-            fh = io.BytesIO()
-            downloader = MediaIoBaseDownload(fh, request)
-            
-            done = False
-            while not done:
-                status, done = downloader.next_chunk()
-
-            fh.seek(0)
-
-            LOCAL_FILEPATH.parent.mkdir(exist_ok=True)
-            with open(LOCAL_FILEPATH, "wb") as f:
-                f.write(fh.read())
-            st.success(f"Successfully downloaded and saved to {LOCAL_FILEPATH}")
-
-            df = pd.read_csv(LOCAL_FILEPATH)
-            st.success("Successfully loaded data from local file.")
-            st.dataframe(df.head(5))
+            st.info("Note: The hero_master.csv file is automatically downloaded from Google Drive")
+            st.info("every time data is loaded, ensuring fresh data (updated every 6 hours).")
 
         except Exception as e:
-            st.error("An error occurred while fetching data from Google Drive.")
+            st.error("An error occurred while checking Google Drive integration.")
             st.exception(e)
 
 st.set_page_config(layout="wide")
@@ -182,10 +191,19 @@ if latest_folder:
 
         display_df = format_dataframe_for_display(comparison_df, rules, en_map, ja_map, timezone)
 
-        start_dt_aware = pd.to_datetime(start_date_filter).tz_localize(display_df['Start Time'].dt.tz)
-        end_dt_aware = (pd.to_datetime(end_date_filter) + pd.Timedelta(days=1, seconds=-1)).tz_localize(display_df['Start Time'].dt.tz)
+        # Get timezone from first valid datetime in Start Time column
+        valid_start_times = display_df['Start Time'].dropna()
+        if not valid_start_times.empty:
+            tz = valid_start_times.iloc[0].tz
+        else:
+            tz = 'UTC'
         
-        filtered_df = display_df[display_df['Start Time'].between(start_dt_aware, end_dt_aware)].copy() 
+        start_dt_aware = pd.to_datetime(start_date_filter).tz_localize(tz)
+        end_dt_aware = (pd.to_datetime(end_date_filter) + pd.Timedelta(days=1, seconds=-1)).tz_localize(tz)
+        
+        # Filter only rows with valid datetime values
+        valid_mask = display_df['Start Time'].notna()
+        filtered_df = display_df[valid_mask & display_df['Start Time'].between(start_dt_aware, end_dt_aware)].copy()
         
         st.subheader("Filtered Event List")
         
@@ -251,7 +269,7 @@ if latest_folder:
                         st.session_state.current_preset = preset_choice
 
                     selected_labels = st.multiselect(
-                        "Select columns to display:",
+                        "Select columns to display:", 
                         options=[header_labels.get(col, col) for col in ordered_all_cols],
                         default=[header_labels.get(col, col) for col in st.session_state.selected_cols if col in header_labels],
                     )
@@ -263,7 +281,7 @@ if latest_folder:
                 # CSV export functionality
                 csv_data = final_df[selected_user_cols].to_csv(index=False, encoding='utf-8-sig')
                 st.download_button(
-                    label="📥 Export to CSV",
+                    label="📥 Export to CSV", 
                     data=csv_data,
                     file_name=f"events_{latest_folder}_{date.today().isoformat()}.csv",
                     mime="text/csv",
@@ -278,8 +296,17 @@ if latest_folder:
         else:
             st.warning("No events found in the selected date range.")
 
+    except FileNotFoundError as e:
+        st.error(f"ファイルが見つかりません: {e}")
+        st.info("以下のことを確認してください:")
+        st.info("1. EMP Extractフォルダに最新のCSVファイルがあるか")
+        st.info("2. CSVファイル名が 'calendar-export-{フォルダ名}.csv' 形式になっているか")
+        st.info("3. フォルダ名が正しいか (例: V7900R-2025-09-15)")
+        st.info("4. ファイルパス: D:/PyScript/EMP Extract/{フォルダ名}/calendar-export-{フォルダ名}.csv")
+        st.button("再試行", on_click=lambda: st.rerun())
     except Exception as e:
-        st.error(f"Failed to load or process data: {e}")
+        st.error(f"データの読み込み中にエラーが発生しました: {e}")
         st.exception(e)
+        st.button("再試行", on_click=lambda: st.rerun())
 else:
     st.info("Please specify data folders in the sidebar and click 'Load Data'.")

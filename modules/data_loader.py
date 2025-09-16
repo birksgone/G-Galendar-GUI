@@ -28,7 +28,7 @@ def download_file_from_drive(file_id, local_filepath):
         fh = io.BytesIO()
         downloader = MediaIoBaseDownload(fh, request)
         
-        done = Falsepip 
+        done = False
         while not done:
             status, done = downloader.next_chunk()
 
@@ -50,19 +50,29 @@ def load_all_data(latest_folder, diff_folder=None):
     # --- Load local event data ---
     data_path = EVENT_BASE_DIR / latest_folder
     event_filename = f"calendar-export-{latest_folder}.csv"
-    main_df = pd.read_csv(data_path / event_filename)
+    event_file_path = data_path / event_filename
+    
+    if not event_file_path.exists():
+        raise FileNotFoundError(f"Event CSV file not found: {event_file_path}")
+    
+    main_df = pd.read_csv(event_file_path)
     
     diff_df = None
     if diff_folder:
         diff_path = EVENT_BASE_DIR / diff_folder
         diff_event_filename = f"calendar-export-{diff_folder}.csv"
-        if (diff_path / diff_event_filename).exists():
-            diff_df = pd.read_csv(diff_path / diff_event_filename)
+        diff_file_path = diff_path / diff_event_filename
+        
+        if diff_file_path.exists():
+            diff_df = pd.read_csv(diff_file_path)
+        else:
+            print(f"Warning: Diff CSV file not found: {diff_file_path}")
 
     # --- Download and load hero data ---
     local_hero_master_path = Path("data") / "hero_master.csv"
     local_hero_master_path.parent.mkdir(exist_ok=True)
     
+    # Always download fresh data (updated every 6 hours)
     download_file_from_drive(HERO_MASTER_FILE_ID, local_hero_master_path)
     
     hero_df = pd.read_csv(local_hero_master_path)
